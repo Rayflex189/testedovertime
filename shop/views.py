@@ -8,6 +8,7 @@ from django.views.generic import ListView, DetailView, TemplateView
 from .models import Product, Category, Review, Cart as CartModel, CartItem, Order
 from .cart import Cart
 from .forms import ReviewForm, CheckoutForm
+from decimal import Decimal  # <-- ADD THIS LINE
 
 def clear_cart(request):
     cart = Cart(request)

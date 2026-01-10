@@ -3,23 +3,43 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserCreationForm, UserProfileForm, CustomUserChangeForm
-
-
-def home(request):
-    return render(request, 'accounts/home.html')
+from django.contrib.auth import login
 
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
-            messages.success(request, "Registration successful!")
-            return redirect('shop:home')
+            
+            # Don't login automatically - just show success message
+            messages.success(request, "Registration successful! Please login to continue.")
+            
+            # Redirect to login page
+            return redirect('accounts:login')
     else:
         form = CustomUserCreationForm()
     
     return render(request, 'accounts/register.html', {'form': form})
+
+def custom_login(request):
+    if request.method == 'POST':
+        form = CustomAuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                messages.success(request, f"Welcome back, {username}!")
+                
+                # Redirect to the next page if specified, otherwise home
+                next_page = request.GET.get('next', 'shop:home')
+                return redirect(next_page)
+    else:
+        form = CustomAuthenticationForm()
+    
+    return render(request, 'accounts/login.html', {'form': form})
 
 @login_required
 def profile(request):

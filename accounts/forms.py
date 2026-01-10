@@ -1,22 +1,78 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser, UserProfile
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
+from .models import CustomUser, UserProfilefrom 
+from .models import CustomUser
+
+User = get_user_model()
 
 class CustomUserCreationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your email'
+        })
+    )
+    first_name = forms.CharField(
+        max_length=30,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your first name'
+        })
+    )
+    last_name = forms.CharField(
+        max_length=30,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your last name'
+        })
+    )
     
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
+        
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Choose a username'
+            }),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Create a password'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Confirm password'})
     
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        
         if commit:
             user.save()
-            # Create profile for the user
+            # You can create a UserProfile here if needed
+            from .models import UserProfile
             UserProfile.objects.create(user=user)
+        
         return user
+
+class CustomAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Username or Email'
+        })
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Password'
+        })
+    )
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:

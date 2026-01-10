@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Register - Tested Over Time{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-person-plus"></i> Create Account</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h3>Join Our Community</h3>
+                        <p class="text-muted">Create your account to start shopping</p>
+                    </div>
+                    
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.first_name|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.last_name|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.username|as_crispy_field }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.email|as_crispy_field }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.password1|as_crispy_field }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.password2|as_crispy_field }}
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-person-plus"></i> Create Account
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p class="mb-0">Already have an account? 
+                            <a href="{% url 'accounts:login' %}" class="text-primary fw-bold">Sign In</a>
+                        </p>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <p class="text-muted small mb-0">
+                            By creating an account, you agree to receive updates about your order and our latest products.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

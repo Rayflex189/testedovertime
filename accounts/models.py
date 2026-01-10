@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
@@ -37,11 +39,25 @@ class CustomUser(AbstractUser):
         verbose_name = 'User'
         verbose_name_plural = 'Users'
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile')
     bio = models.TextField(blank=True)
-    preferences = models.JSONField(default=dict, blank=True)  # Store user preferences
+    preferences = models.JSONField(default=dict, blank=True)
     wishlist = models.ManyToManyField('shop.Product', blank=True, related_name='wishlisted_by')
     
     def __str__(self):
         return f"Profile of {self.user.username}"
+
+
+# Signal handlers
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
+# Connect signals
+post_save.connect(create_user_profile, sender=CustomUser)
+post_save.connect(save_user_profile, sender=CustomUser)

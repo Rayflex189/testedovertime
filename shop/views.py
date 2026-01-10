@@ -5,10 +5,10 @@ from django.db.models import Q, Avg
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.generic import ListView, DetailView, TemplateView
-from .models import Product, Category, Review, Cart as CartModel, CartItem, Order
+from decimal import Decimal
+from .models import Product, Category, Review, Cart as CartModel, CartItem, Order, OrderItem  # <-- Add OrderItem here
 from .cart import Cart
 from .forms import ReviewForm, CheckoutForm
-from decimal import Decimal  # <-- ADD THIS LINE
 
 def clear_cart(request):
     cart = Cart(request)

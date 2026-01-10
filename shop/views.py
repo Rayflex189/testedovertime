@@ -9,6 +9,12 @@ from .models import Product, Category, Review, Cart as CartModel, CartItem, Orde
 from .cart import Cart
 from .forms import ReviewForm, CheckoutForm
 
+def clear_cart(request):
+    cart = Cart(request)
+    cart.clear()
+    messages.success(request, "Cart cleared successfully.")
+    return redirect('shop:cart_detail')
+
 class HomeView(TemplateView):
     template_name = 'shop/home.html'
     
@@ -39,17 +45,8 @@ class ProductListView(ListView):
         if query:
             queryset = queryset.filter(
                 Q(name__icontains=query) |
-                Q(description__icontains=query) |
-                Q(category__name__icontains=query)
+                Q(description__icontains=query)
             )
-        
-        # Filter by price range
-        min_price = self.request.GET.get('min_price')
-        max_price = self.request.GET.get('max_price')
-        if min_price:
-            queryset = queryset.filter(price__gte=min_price)
-        if max_price:
-            queryset = queryset.filter(price__lte=max_price)
         
         # Sorting
         sort_by = self.request.GET.get('sort', 'name')
@@ -59,8 +56,6 @@ class ProductListView(ListView):
             queryset = queryset.order_by('-price')
         elif sort_by == 'newest':
             queryset = queryset.order_by('-created_at')
-        elif sort_by == 'popular':
-            queryset = queryset.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating')
         else:
             queryset = queryset.order_by('name')
         
@@ -71,6 +66,17 @@ class ProductListView(ListView):
         context['categories'] = Category.objects.filter(is_active=True)
         context['selected_category'] = self.request.GET.get('category')
         context['search_query'] = self.request.GET.get('q', '')
+        
+        # Get sort label for display
+        sort_by = self.request.GET.get('sort', 'name')
+        sort_labels = {
+            'name': 'Name (A-Z)',
+            'price_low': 'Price: Low to High',
+            'price_high': 'Price: High to Low',
+            'newest': 'Newest First'
+        }
+        context['sort_label'] = sort_labels.get(sort_by, 'Name (A-Z)')
+        
         return context
 
 class ProductDetailView(DetailView):

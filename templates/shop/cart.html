@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shopping Cart - Tested Over Time{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Shopping Cart</h1>
+    
+    {% if items %}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'images/placeholder.jpg' %}{% endif %}" 
+                                                 alt="{{ item.product.name }}" 
+                                                 class="img-thumbnail me-3" 
+                                                 style="width: 80px; height: 80px; object-fit: cover;">
+                                            <div>
+                                                <h6 class="mb-1">{{ item.product.name }}</h6>
+                                                <small class="text-muted">
+                                                    {% if item.product.size %}Size: {{ item.product.get_size_display }}{% endif %}
+                                                    {% if item.product.color %} | Color: {{ item.product.get_color_display }}{% endif %}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>${{ item.price }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'shop:update_cart' item.product.id %}" class="d-flex">
+                                            {% csrf_token %}
+                                            <div class="input-group" style="width: 120px;">
+                                                <button class="btn btn-outline-secondary" type="button" onclick="decrementQuantity(this)">-</button>
+                                                <input type="number" 
+                                                       name="quantity" 
+                                                       value="{{ item.quantity }}" 
+                                                       min="1" 
+                                                       max="{{ item.product.stock }}"
+                                                       class="form-control text-center"
+                                                       onchange="this.form.submit()">
+                                                <button class="btn btn-outline-secondary" type="button" onclick="incrementQuantity(this)">+</button>
+                                            </div>
+                                        </form>
+                                    </td>
+                                    <td>${{ item.total_price }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'shop:remove_from_cart' item.product.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i> Remove
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'shop:product_list' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Continue Shopping
+                </a>
+                <form method="post" action="{% url 'shop:clear_cart' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="bi bi-cart-x"></i> Clear Cart
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span>${{ subtotal }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span>$10.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax</span>
+                        <span>${{ subtotal|add:"0"|floatformat:2 }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Total</strong>
+                        <strong>${{ subtotal|add:"10"|floatformat:2 }}</strong>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="coupon" class="form-label">Coupon Code</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="coupon" placeholder="Enter code">
+                            <button class="btn btn-outline-primary" type="button">Apply</button>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'shop:checkout' %}" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-lock"></i> Proceed to Checkout
+                    </a>
+                    
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-shield-check"></i> Secure checkout
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h6 class="mb-3">Need Help?</h6>
+                    <p class="small text-muted mb-2">
+                        <i class="bi bi-envelope me-2"></i> support@testedovertime.com
+                    </p>
+                    <p class="small text-muted mb-2">
+                        <i class="bi bi-telephone me-2"></i> (555) 123-4567
+                    </p>
+                    <p class="small text-muted">
+                        <i class="bi bi-clock me-2"></i> Mon-Fri: 9am-6pm EST
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-cart-x display-1 text-muted"></i>
+        </div>
+        <h3 class="mb-3">Your cart is empty</h3>
+        <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet.</p>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg">
+            <i class="bi bi-shop"></i> Start Shopping
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function incrementQuantity(button) {
+        const input = button.parentElement.querySelector('input[type="number"]');
+        const max = parseInt(input.getAttribute('max'));
+        let value = parseInt(input.value);
+        if (value < max) {
+            input.value = value + 1;
+            input.form.submit();
+        }
+    }
+    
+    function decrementQuantity(button) {
+        const input = button.parentElement.querySelector('input[type="number"]');
+        const min = parseInt(input.getAttribute('min'));
+        let value = parseInt(input.value);
+        if (value > min) {
+            input.value = value - 1;
+            input.form.submit();
+        }
+    }
+    
+    // Auto-submit when quantity changes
+    document.querySelectorAll('input[name="quantity"]').forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.value >= this.min && this.value <= this.max) {
+                this.form.submit();
+            }
+        });
+    });
+</script>
+{% endblock %}

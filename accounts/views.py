@@ -5,6 +5,20 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserCreationForm, UserProfileForm, CustomUserChangeForm, CustomAuthenticationForm
 
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        # Delete the user
+        user = request.user
+        logout(request)  # Logout first
+        user.delete()  # Delete the user
+        
+        messages.success(request, "Your account has been deleted successfully.")
+        return redirect('shop:home')
+    
+    # If not POST, redirect to profile edit
+    return redirect('accounts:profile_edit')
+
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)

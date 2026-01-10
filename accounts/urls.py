@@ -38,4 +38,5 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('profile/edit/', views.profile_edit, name='profile_edit'),
     path('orders/', views.order_history, name='order_history'),  # Add this line
+    path('delete-account/', views.delete_account, name='delete_account'),
 ]

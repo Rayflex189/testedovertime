@@ -1,7 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
-from .models import CustomUser, UserProfilefrom 
-from .models import CustomUser
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
+from django.contrib.auth import get_user_model
+from .models import CustomUser, UserProfile
 
 User = get_user_model()
 
@@ -54,9 +54,7 @@ class CustomUserCreationForm(UserCreationForm):
         
         if commit:
             user.save()
-            # You can create a UserProfile here if needed
-            from .models import UserProfile
-            UserProfile.objects.create(user=user)
+            # UserProfile is automatically created by the signal
         
         return user
 

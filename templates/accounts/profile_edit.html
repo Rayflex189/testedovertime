@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Profile - Tested Over Time{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i> Edit Profile</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ user_form.username|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ user_form.email|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ user_form.first_name|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ user_form.last_name|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ user_form.phone|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ user_form.date_of_birth|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ user_form.profile_picture|as_crispy_field }}
+                        </div>
+                        
+                        <h5 class="mt-4 mb-3">Shipping Address</h5>
+                        <div class="mb-3">
+                            {{ user_form.shipping_address|as_crispy_field }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                {{ user_form.shipping_city|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {{ user_form.shipping_state|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {{ user_form.shipping_zip|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <h5 class="mt-4 mb-3">Billing Address</h5>
+                        <div class="mb-3">
+                            {{ user_form.address|as_crispy_field }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                {{ user_form.city|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {{ user_form.state|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                {{ user_form.zip_code|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ user_form.country|as_crispy_field }}
+                        </div>
+                        
+                        <h5 class="mt-4 mb-3">Preferences</h5>
+                        <div class="mb-3">
+                            {{ profile_form.bio|as_crispy_field }}
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            {{ user_form.newsletter_subscribed|as_crispy_field }}
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary me-md-2">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Danger Zone -->
+            <div class="card shadow-sm mt-4 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i> Danger Zone</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">Once you delete your account, there is no going back. Please be certain.</p>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                        <i class="bi bi-trash me-1"></i> Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                <p class="text-danger"><strong>Warning:</strong> All your data will be permanently removed.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="{% url 'accounts:delete_account' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete My Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

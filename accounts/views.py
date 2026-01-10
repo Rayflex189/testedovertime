@@ -65,6 +65,7 @@ def profile_edit(request):
         'profile_form': profile_form
     })
 
+
 @login_required
 def order_history(request):
     orders = request.user.orders.all().order_by('-created_at')

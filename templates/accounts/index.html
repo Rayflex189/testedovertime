@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tested Over Time - Faith Apparel</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #e53e3e;
+            --accent-color: #d69e2e;
+            --light-color: #f7fafc;
+            --dark-color: #2d3748;
+            --text-color: #2d3748;
+            --light-text: #718096;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+            color: var(--primary-color) !important;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            margin: 0 10px;
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(26, 54, 93, 0.9), rgba(26, 54, 93, 0.8)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 120px 0;
+            margin-bottom: 60px;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--secondary-color);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: #c53030;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-color);
+        }
+        
+        .product-card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .product-img {
+            height: 300px;
+            object-fit: cover;
+            width: 100%;
+        }
+        
+        .product-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-top: 15px;
+        }
+        
+        .product-type {
+            color: var(--light-text);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .product-price {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+        
+        .badge-low-stock {
+            background-color: var(--secondary-color);
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 3px;
+        }
+        
+        .brand-story-section {
+            background-color: var(--light-color);
+            padding: 80px 0;
+            margin: 60px 0;
+        }
+        
+        .brand-story-title {
+            color: var(--primary-color);
+            font-weight: 800;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        
+        .brand-story-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        
+        .highlight-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 25px 0;
+            font-style: italic;
+        }
+        
+        .newsletter-section {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 80px 0;
+        }
+        
+        .newsletter-title {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .newsletter-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .form-control-newsletter {
+            padding: 15px;
+            border-radius: 30px;
+            border: none;
+        }
+        
+        .btn-newsletter {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-newsletter:hover {
+            background-color: #b0821f;
+            transform: translateY(-3px);
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0 20px;
+        }
+        
+        .footer-text-small {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            margin-top: 20px;
+        }
+        
+        .verse-highlight {
+            background-color: #fef3c7;
+            padding: 20px;
+            border-left: 5px solid var(--accent-color);
+            margin: 30px 0;
+            font-style: italic;
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .brand-story-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">TESTED OVERTIME</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Shop All</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Hats</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Outerwear</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-primary ms-2" href="#">Text Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h1 class="hero-title">Tested Over Time – More Than a Brand</h1>
+                    <p class="hero-subtitle">A movement for the redeemed – the ones who've been tested, tried, and transformed. We wear faith out loud. We walk with purpose.</p>
+                    <a href="#" class="btn btn-primary-custom btn-lg">Shop Collection</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Most Popular Products Section -->
+    <section class="container py-5">
+        <h2 class="section-title">Most Popular</h2>
+        <div class="row">
+            <!-- Product 1 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="product-img" alt="Scroll Life Sweatshirt">
+                    <div class="p-3">
+                        <h5 class="product-title">Tested Over Time - "Scroll Life"</h5>
+                        <p class="product-type">Sweatshirt</p>
+                        <p class="product-price">US$46.00 - US$52.00</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product 2 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?ixlib=rb-4.0.3&auto=format&fit=crop&w-800&q=80" class="product-img" alt="Redemption Hoodie">
+                    <div class="p-3">
+                        <h5 class="product-title">"Tattoos Won't Cover My Redemption" Core Fleece Pullover Hoodie</h5>
+                        <p class="product-type">Port & Co PCF6H</p>
+                        <p class="product-price">US$53.00 - US$58.00</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product 3 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1558769132-cb1a40ed0ada?ixlib=rb-4.0.3&auto=format&fit=crop&w-800&q=80" class="product-img" alt="Athlete Hoodie">
+                    <div class="p-3">
+                        <h5 class="product-title">Behind Every Athlete - New ERA</h5>
+                        <p class="product-type">Tri-blend Hoodie</p>
+                        <p class="product-price">US$39.00 - US$40.00</p>
+                        <span class="badge-low-stock">Low stock</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product 4 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="product-card">
+                    <img src="https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?ixlib=rb-4.0.3&auto=format&fit=crop&w-800&q=80" class="product-img" alt="Forgiveness Camo">
+                    <div class="p-3">
+                        <h5 class="product-title">Forgiveness Over Beverage - Camo</h5>
+                        <p class="product-type">T-Shirt</p>
+                        <p class="product-price">US$33.00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Verse Highlight -->
+        <div class="verse-highlight text-center mt-5">
+            <h4 class="mb-3">"BLESSED IS THE ONE WHO PERSEVERES." - JAMES 1:12</h4>
+            <p class="mb-0">For they will receive the crown of life that God has promised to those who love him.</p>
+        </div>
+    </section>
+
+    <!-- Brand Story Section -->
+    <section class="brand-story-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1520006403909-838d6b92c22e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="img-fluid rounded shadow" alt="Brand Story Image">
+                </div>
+                <div class="col-lg-6 mt-5 mt-lg-0">
+                    <h2 class="brand-story-title">Tested Over Time – More Than a Brand, It's a Testament</h2>
+                    <p class="brand-story-text">Tested Over Time was born from brokenness, built through faith, and refined by the hands of Jesus.</p>
+                    <p class="brand-story-text">It's not about perfection – it's about perseverance. It's for the ones who've been through the dark, wrestled with doubt, and still chose to stand back up and follow the light.</p>
+                    <p class="brand-story-text">Every design, every message, every stitch carries a story – not of who we were, but of who God is making us to be.</p>
+                    <p class="brand-story-text">This brand exists to remind the world that your scars don't disqualify you; they prove that grace is real. That the same hands that broke you can rebuild you stronger, softer, and more aligned with your purpose.</p>
+                    
+                    <div class="highlight-text">
+                        <strong>Tested Over Time</strong> is a movement for the redeemed – the ones who've been tested, tried, and transformed.
+                    </div>
+                    
+                    <p class="brand-story-text">We wear faith out loud.</p>
+                    <p class="brand-story-text">We walk with purpose.</p>
+                    <p class="brand-story-text">We remember that every trial was preparation for the mission God placed within us.</p>
+                    <p class="brand-story-text">Two paths. One soul. One Savior.</p>
+                    <p class="brand-story-text"><em>That's not a slogan – it's our story.</em></p>
+                    
+                    <div class="mt-4">
+                        <a href="#" class="btn btn-primary-custom btn-lg">Shop All Products</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container text-center">
+            <h2 class="newsletter-title">Stay in the Loop</h2>
+            <p class="mb-4">Subscribe to get updates on new products, stories of faith, and exclusive offers.</p>
+            
+            <form class="newsletter-form">
+                <div class="input-group mb-3">
+                    <input type="email" class="form-control form-control-newsletter" placeholder="Enter your email" required>
+                    <button class="btn btn-newsletter ms-2" type="submit">Sign Up</button>
+                </div>
+            </form>
+            
+            <p class="footer-text-small mt-3">
+                This form is protected by reCAPTCHA and the Google 
+                <a href="#" class="text-light">Privacy Policy</a> and 
+                <a href="#" class="text-light">Terms of Service</a> apply.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="mb-3">TESTED OVERTIME</h4>
+                    <p>More than apparel. A movement of faith, redemption, and purpose.</p>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="mb-3">Shop</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none">All Products</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">New Arrivals</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Best Sellers</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Sale</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="mb-3">Support</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none">Contact Us</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">FAQs</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Shipping</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Returns</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="mb-3">Connect</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none">Blog</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Our Story</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Testimonials</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Text Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h5 class="mb-3">Follow Us</h5>
+                    <div class="d-flex">
+                        <a href="#" class="text-light me-3"><i class="bi bi-facebook fs-5"></i></a>
+                        <a href="#" class="text-light me-3"><i class="bi bi-instagram fs-5"></i></a>
+                        <a href="#" class="text-light me-3"><i class="bi bi-twitter fs-5"></i></a>
+                        <a href="#" class="text-light"><i class="bi bi-pinterest fs-5"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-light">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2023 Tested Over Time. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-light text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-light text-decoration-none">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Simple form submission handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const newsletterForm = document.querySelector('.newsletter-form');
+            
+            if(newsletterForm) {
+                newsletterForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = this.querySelector('input[type="email"]').value;
+                    
+                    // In a real application, you would send this to a server
+                    alert(`Thank you for subscribing with: ${email}\nYou'll receive updates soon!`);
+                    this.reset();
+                });
+            }
+            
+            // Add animation to product cards on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe product cards
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>

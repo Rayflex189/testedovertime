@@ -311,3 +311,27 @@ def wishlist_view(request):
     profile = request.user.profile
     wishlist_items = profile.wishlist.all()
     return render(request, 'shop/wishlist.html', {'wishlist_items': wishlist_items})
+
+@login_required
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    if request.method == 'POST':
+        if order.status == 'PENDING':
+            order.status = 'CANCELLED'
+            order.save()
+            
+            # Restore product stock
+            for item in order.items.all():
+                product = item.product
+                product.stock += item.quantity
+                product.save()
+            
+            messages.success(request, f"Order #{order.order_number} has been cancelled.")
+        else:
+            messages.error(request, "This order cannot be cancelled.")
+        
+        return redirect('shop:order_detail', order_id=order.id)
+    
+    # If not POST, show confirmation page or redirect
+    return render(request, 'shop/cancel_order.html', {'order': order})

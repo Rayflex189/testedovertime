@@ -50,7 +50,14 @@
                             <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a></li>
                             <li><a class="dropdown-item" href="{% url 'shop:order_list' %}">My Orders</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
+                            <li>
+    <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit(); return false;">
+        <i class="bi bi-box-arrow-right me-2"></i> Logout
+    </a>
+    <form id="logout-form" method="post" action="{% url 'accounts:logout' %}" style="display: none;">
+        {% csrf_token %}
+    </form>
+</li>
                         </ul>
                     </li>
                     {% else %}

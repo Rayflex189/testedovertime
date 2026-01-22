@@ -1,79 +1,302 @@
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Tested Over Time{% endblock %}</title>
-    
+
+    <!-- Google Fonts for elegant, faith-inspired typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Cinzel for elegant serif headings (curly/serif look) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Playfair Display for beautiful body text -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Montserrat for clean supporting text -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Smartsupp Live Chat script -->
+<script type="text/javascript">
+var _smartsupp = _smartsupp || {};
+_smartsupp.key = 'c22ac59e0213c5eb1f120854fd7312501a58ff1f';
+window.smartsupp||(function(d) {
+  var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+  s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+  c.type='text/javascript';c.charset='utf-8';c.async=true;
+  c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+})(document);
+</script>
+<noscript> Powered by <a href=“https://www.smartsupp.com” target=“_blank”>Smartsupp</a></noscript>
+
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
     <!-- Custom CSS -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
+
     {% block extra_css %}{% endblock %}
+
+    <style>
+        :root {
+            --font-elegant: 'Cinzel', serif;
+            --font-body: 'Playfair Display', serif;
+            --font-support: 'Montserrat', sans-serif;
+            --color-gold: #D4AF37;
+            --color-dark: #1a1a1a;
+            --color-light: #f8f9fa;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: #333;
+            background-color: #fff;
+        }
+
+        .brand-logo {
+            font-family: var(--font-elegant);
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.15em;
+            color: var(--color-dark);
+            text-decoration: none;
+            position: relative;
+        }
+
+        .brand-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-gold) 0%, transparent 100%);
+        }
+
+        .nav-link {
+            font-family: var(--font-support);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            color: #555;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--color-dark);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--color-gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .footer-brand {
+            font-family: var(--font-elegant);
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 0.1em;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .footer-tagline {
+            font-family: var(--font-body);
+            font-style: italic;
+            font-size: 0.95rem;
+            color: #ccc;
+        }
+
+        .footer-divider {
+            border-color: rgba(255,255,255,0.1);
+            margin: 2rem 0;
+        }
+
+        .social-icon {
+            font-size: 1.2rem;
+            color: #fff;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .social-icon:hover {
+            color: var(--color-gold);
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .copyright {
+            font-family: var(--font-support);
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .btn-primary {
+            background-color: var(--color-dark);
+            border-color: var(--color-dark);
+            font-family: var(--font-support);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0;
+        }
+
+        .btn-primary:hover {
+            background-color: #000;
+            border-color: #000;
+        }
+
+        .alert {
+            border-radius: 0;
+            border: none;
+            font-family: var(--font-support);
+        }
+
+        .navbar {
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        footer {
+            background-color: var(--color-dark);
+            border-top: 3px solid var(--color-gold);
+        }
+
+
+    /* Button improvements */
+    .button, input[type=submit], input[type=button], .submit-row input {
+        border-radius: 4px !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .button:hover, input[type=submit]:hover, input[type=button]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Badge styles */
+    .badge {
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 12px;
+    }
+
+    /* Alert styles */
+    .alert {
+        border-radius: 6px;
+        border: none;
+    }
+
+    /* Table improvements */
+    #changelist table thead th {
+        background: #f8f9fa;
+        font-weight: 600;
+    }
+
+    /* Form improvements */
+    .form-row {
+        margin-bottom: 15px;
+    }
+
+    /* Status colors */
+    .status-pending { color: var(--warning-color); }
+    .status-processing { color: var(--info-color); }
+    .status-shipped { color: #6f42c1; }
+    .status-delivered { color: var(--success-color); }
+    .status-cancelled { color: var(--danger-color); }
+
+    /* PIN display */
+    .pin-display {
+        font-family: monospace;
+        font-size: 1.5rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        display: inline-block;
+    }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
         <div class="container">
-            <a class="navbar-brand fw-bold text-primary" href="{% url 'shop:home' %}">
-                <i class="bi bi-shop"></i> Tested Over Time
+            <a class="navbar-brand brand-logo fw-bold" href="{% url 'shop:home' %}">
+                TESTED OVER TIME
             </a>
-            
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'shop:product_list' %}">Shop All</a>
+                        <a class="nav-link mx-2" href="{% url 'shop:product_list' %}">Shop All</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Blog</a>
+                        <a class="nav-link mx-2" href="#">Blog</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link mx-2" href="#">Our Story</a>
                     </li>
                 </ul>
-                
-                <ul class="navbar-nav ms-auto">
+
+                <ul class="navbar-nav ms-auto align-items-center">
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i> {{ user.username }}
+                        <a class="nav-link dropdown-toggle mx-2" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i> {{ user.username }}
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a></li>
                             <li><a class="dropdown-item" href="{% url 'shop:order_list' %}">My Orders</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-    <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit(); return false;">
-        <i class="bi bi-box-arrow-right me-2"></i> Logout
-    </a>
-    <form id="logout-form" method="post" action="{% url 'accounts:logout' %}" style="display: none;">
-        {% csrf_token %}
-    </form>
-</li>
+                                <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit(); return false;">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                </a>
+                                <form id="logout-form" method="post" action="{% url 'accounts:logout' %}" style="display: none;">
+                                    {% csrf_token %}
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+                        <a class="nav-link mx-2" href="{% url 'accounts:login' %}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:register' %}">Register</a>
+                        <a class="nav-link mx-2" href="{% url 'accounts:register' %}">Register</a>
                     </li>
                     {% endif %}
-                    
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'shop:cart_detail' %}">
-                            <i class="bi bi-cart3"></i> Cart
+                        <a class="nav-link mx-2 position-relative" href="{% url 'shop:cart_detail' %}">
+                            <i class="bi bi-bag"></i>
                             {% if cart_items_count and cart_items_count > 0 %}
-                            <span class="badge bg-danger">{{ cart_items_count }}</span>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                {{ cart_items_count }}
+                            </span>
                             {% endif %}
                         </a>
                     </li>
@@ -86,8 +309,19 @@
     <div class="container mt-3">
         {% if messages %}
             {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                <div class="d-flex align-items-center">
+                    {% if message.tags == 'success' %}
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    {% elif message.tags == 'error' %}
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                    {% elif message.tags == 'warning' %}
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {% else %}
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    {% endif %}
+                    <span>{{ message }}</span>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             {% endfor %}
@@ -100,25 +334,66 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white py-5 mt-5">
+    <footer class="py-5 mt-5">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <h5>TESTED OVERTIME</h5>
-                    <p>More than apparel. A movement of faith, redemption, and purpose.</p>
+            <div class="row align-items-center">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <div class="footer-brand">TESTED OVER TIME</div>
+                    <p class="footer-tagline">More than a brand. It's a testimony.</p>
                 </div>
-                <div class="col-md-8 text-md-end">
-                    <h6>Stay Connected</h6>
-                    <div class="mt-3">
-                        <a href="#" class="text-white me-3"><i class="bi bi-facebook fs-4"></i></a>
-                        <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
-                        <a href="#" class="text-white"><i class="bi bi-twitter fs-4"></i></a>
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <h6 class="text-uppercase mb-3" style="font-family: var(--font-support); color: #fff; font-weight: 600;">Stay Connected</h6>
+                            <div class="d-flex gap-3">
+                                <a href="#" class="social-icon">
+                                    <i class="bi bi-facebook"></i>
+                                </a>
+                                <a href="#" class="social-icon">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                                <a href="#" class="social-icon">
+                                    <i class="bi bi-twitter"></i>
+                                </a>
+                                <a href="#" class="social-icon">
+                                    <i class="bi bi-pinterest"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-uppercase mb-3" style="font-family: var(--font-support); color: #fff; font-weight: 600;">Stay in the Loop</h6>
+                            <form class="d-flex">
+                                <input type="email" class="form-control rounded-0" placeholder="Your email" style="font-family: var(--font-support);">
+                                <button class="btn btn-primary rounded-0 ms-2" type="submit">
+                                    <i class="bi bi-envelope"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-            <hr class="bg-light">
-            <div class="text-center">
-                <p class="mb-0">&copy; 2023 Tested Over Time. All rights reserved.</p>
+
+            <hr class="footer-divider">
+
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <ul class="nav" style="font-family: var(--font-support); font-size: 0.85rem;">
+                        <li class="nav-item me-3">
+                            <a class="nav-link p-0 text-white-50" href="#">Privacy Policy</a>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a class="nav-link p-0 text-white-50" href="#">Terms of Service</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link p-0 text-white-50" href="#">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="copyright mb-0">
+                        &copy; {% now "Y" %} Tested Over Time. All rights reserved.
+                    </p>
+                </div>
             </div>
         </div>
     </footer>

@@ -9,50 +9,581 @@
     <div class="container py-5">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4">Tested Over Time</h1>
-                <p class="lead mb-4">More than a brand. A movement for the redeemed.</p>
-                <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg">Shop Collection</a>
+                <h1 class="display-4 fw-bold mb-4 brand-title">TESTED OVER TIME</h1>
+                <p class="lead mb-4 brand-subtitle">MORE THAN A BRAND. A MOVEMENT FOR THE REDEEMED.</p>
+                <a href="{% url 'shop:product_list' %}" class="btn btn-dark btn-lg px-5">Shop Collection</a>
             </div>
             <div class="col-lg-6">
-                <img src="{% static 'images/hero_image.webp' %}" class="img-fluid rounded shadow" alt="Hero Image">
+                <img src="{% static 'images/hero_image.webp' %}" class="img-fluid rounded shadow" alt="Hero Image" onerror="this.src='{% static 'images/placeholder.jpg' %}'">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Category Navigation - Dynamic from Database -->
+{% if categories %}
+<section class="container py-4 mb-5">
+    <div class="row g-4">
+        {% for category in categories|slice:":3" %}
+        <div class="col-md-4">
+            <div class="category-display-card">
+                <div class="category-image-wrapper">
+                    {% if category.image %}
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}" class="category-image" onerror="this.src='{% static 'images/placeholder.jpg' %}">
+                    {% else %}
+                        <img src="{% static 'images/placeholder.jpg' %}" alt="{{ category.name }}" class="category-image">
+                    {% endif %}
+                    <div class="category-overlay">
+                        <h3 class="category-name-display">{{ category.name|upper }}</h3>
+                    </div>
+                </div>
+                <div class="category-content text-center py-4">
+                    <a href="{% url 'shop:product_list' %}?category={{ category.slug }}" class="btn btn-outline-dark px-5">Shop Now</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Brand Statement Section -->
+<section class="brand-statement-section py-5 bg-dark text-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h2 class="brand-statement-title mb-4">BULLETPROOF BREAKING</h2>
+                <p class="brand-statement-text lead">
+                    NO ONE CAN STOP HER FROM BEING THE BEST. SHE BECAME SOMEONE NO ONE CAN STOP.
+                </p>
+                <div class="mt-4">
+                    <!-- Text Us Button -->
+                    <a href="sms:+1234567890" class="btn btn-outline-light px-4">
+                        <i class="bi bi-chat-dots me-2"></i> Text us
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Featured Products -->
+{% if featured_products %}
 <section class="container py-5">
-    <h2 class="text-center mb-5">Most Popular</h2>
-    <div class="row">
-        <div class="col-md-3 mb-4">
-            <div class="card product-card h-100">
-                <img src="{% static 'images/chain1.webp' %}" class="card-img-top" alt="Product">
-                <div class="card-body">
-                    <h5 class="card-title">Scroll Life Sweatshirt</h5>
-                    <p class="text-muted">Sweatshirt</p>
-                    <p class="fw-bold">$46.00 - $52.00</p>
-                    <a href="#" class="btn btn-primary">Add to Cart</a>
+    <h2 class="text-center mb-5 section-title">Most Popular</h2>
+    <div class="row g-4">
+        {% for product in featured_products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card product-card h-100 border-0">
+                <a href="{% url 'shop:product_detail' product.slug %}">
+                    {% if product.primary_images and product.primary_images.0 %}
+                        <img src="{{ product.primary_images.0.image.url }}" class="card-img-top product-image" alt="{{ product.primary_images.0.alt_text|default:product.name }}">
+                    {% elif product.images.exists %}
+                        <img src="{{ product.images.first.image.url }}" class="card-img-top product-image" alt="{{ product.images.first.alt_text|default:product.name }}">
+                    {% else %}
+                        <img src="{% static 'images/placeholder.jpg' %}" class="card-img-top product-image" alt="{{ product.name }}">
+                    {% endif %}
+                </a>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title product-name">
+                        <a href="{% url 'shop:product_detail' product.slug %}" class="text-decoration-none text-dark">
+                            {{ product.name }}
+                        </a>
+                    </h5>
+
+                    {% if product.category %}
+                    <p class="text-muted mb-2 product-category">{{ product.category.name }}</p>
+                    {% endif %}
+
+                    <div class="mt-auto">
+                        <p class="fw-bold product-price">
+                            {% if product.discount_price %}
+                            <span class="text-muted text-decoration-line-through me-2">${{ product.price }}</span>
+                            <span class="text-danger">${{ product.discount_price }}</span>
+                            {% else %}
+                            ${{ product.price }}
+                            {% endif %}
+                        </p>
+
+                        {% if product.stock <= 5 and product.stock > 0 %}
+                        <p class="text-danger small mb-2">
+                            <i class="bi bi-exclamation-triangle"></i> Only {{ product.stock }} left in stock
+                        </p>
+                        {% elif product.stock == 0 %}
+                        <p class="text-danger small mb-2">
+                            <i class="bi bi-x-circle"></i> Out of stock
+                        </p>
+                        {% endif %}
+
+                        <div class="d-grid gap-2">
+                            {% if product.stock > 0 %}
+                            <form action="{% url 'shop:add_to_cart' product.id %}" method="post" class="add-to-cart-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-dark w-100">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                </button>
+                            </form>
+                            {% else %}
+                            <button class="btn btn-outline-secondary w-100" disabled>
+                                Out of Stock
+                            </button>
+                            {% endif %}
+                            <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-outline-dark w-100">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
                 </div>
+
+                {% if product.is_new %}
+                <div class="position-absolute top-0 start-0 m-2">
+                    <span class="badge bg-danger">New</span>
+                </div>
+                {% endif %}
+
+                {% if product.discount_price %}
+                <div class="position-absolute top-0 end-0 m-2">
+                    <span class="badge bg-success">Save {{ product.get_discount_percentage }}%</span>
+                </div>
+                {% endif %}
             </div>
         </div>
-        <!-- Add more product cards here -->
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{% url 'shop:product_list' %}" class="btn btn-outline-dark px-5">View All Products</a>
+    </div>
+</section>
+{% endif %}
+
+<!-- New Arrivals -->
+{% if new_products %}
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 section-title">New Arrivals</h2>
+        <div class="row g-4">
+            {% for product in new_products %}
+            {% if forloop.counter <= 4 %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card product-card h-100 border-0">
+                    <a href="{% url 'shop:product_detail' product.slug %}">
+                        {% if product.primary_images and product.primary_images.0 %}
+                            <img src="{{ product.primary_images.0.image.url }}" class="card-img-top product-image" alt="{{ product.primary_images.0.alt_text|default:product.name }}">
+                        {% elif product.images.exists %}
+                            <img src="{{ product.images.first.image.url }}" class="card-img-top product-image" alt="{{ product.images.first.alt_text|default:product.name }}">
+                        {% else %}
+                            <img src="{% static 'images/placeholder.jpg' %}" class="card-img-top product-image" alt="{{ product.name }}">
+                        {% endif %}
+                    </a>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title product-name">
+                            <a href="{% url 'shop:product_detail' product.slug %}" class="text-decoration-none text-dark">
+                                {{ product.name }}
+                            </a>
+                        </h5>
+
+                        <div class="mt-auto">
+                            <p class="fw-bold product-price">
+                                {% if product.discount_price %}
+                                <span class="text-muted text-decoration-line-through me-2">${{ product.price }}</span>
+                                <span class="text-danger">${{ product.discount_price }}</span>
+                                {% else %}
+                                ${{ product.price }}
+                                {% endif %}
+                            </p>
+
+                            <div class="d-grid gap-2">
+                                {% if product.stock > 0 %}
+                                <form action="{% url 'shop:add_to_cart' product.id %}" method="post" class="add-to-cart-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-dark w-100 btn-sm">
+                                        <i class="bi bi-cart-plus"></i> Add to Cart
+                                    </button>
+                                </form>
+                                {% else %}
+                                <button class="btn btn-outline-secondary w-100 btn-sm" disabled>
+                                    Out of Stock
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if product.is_new %}
+                    <div class="position-absolute top-0 start-0 m-2">
+                        <span class="badge bg-danger">New</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Our Story Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="{% static 'images/logo.jpg' %}" class="img-fluid rounded shadow" alt="Our Story" onerror="this.src='{% static 'images/placeholder.jpg' %}'">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="fw-bold mb-4 story-title">OUR STORY</h2>
+                <p class="lead story-lead">Tested Over Time was born from brokenness, built through faith, and refined by the hands of Jesus.</p>
+                <p class="story-text">It's not about perfection – it's about perseverance. It's for the ones who've been through the dark, wrestled with doubt, and still chose to stand back up and follow the light.</p>
+                <p class="story-text">Every design, every message, every stitch carries a story — not of who we were, but of who God is making us to be.</p>
+                <a href="#" class="btn btn-outline-dark px-4">Learn More</a>
+            </div>
+        </div>
     </div>
 </section>
 
-<!-- Brand Story -->
-<section class="bg-light py-5">
+<!-- Newsletter -->
+<section class="py-5 bg-light">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h2 class="fw-bold mb-4">Our Story</h2>
-                <p class="lead">Tested Over Time was born from brokenness, built through faith, and refined by the hands of Jesus.</p>
-                <p>It's not about perfection – it's about perseverance. It's for the ones who've been through the dark, wrestled with doubt, and still chose to stand back up and follow the light.</p>
-                <a href="#" class="btn btn-outline-primary">Learn More</a>
-            </div>
-            <div class="col-lg-6">
-                <img src="{% static 'images/logo.jpg' %}" class="img-fluid rounded" alt="Our Story">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 text-center">
+                <h3 class="fw-bold mb-3">STAY IN THE LOOP</h3>
+                <p class="text-muted mb-4">Subscribe to get updates on new products and exclusive offers.</p>
+                <form class="d-flex">
+                    <input type="email" class="form-control rounded-0" placeholder="Your email address" required>
+                    <button type="submit" class="btn btn-dark rounded-0 ms-2">Subscribe</button>
+                </form>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+    /* Category Display Styles */
+    .category-display-card {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .category-display-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        border-color: #ddd;
+    }
+    
+    .category-image-wrapper {
+        position: relative;
+        height: 250px;
+        overflow: hidden;
+    }
+    
+    .category-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .category-display-card:hover .category-image {
+        transform: scale(1.05);
+    }
+    
+    .category-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        padding: 2rem 1rem 1rem;
+    }
+    
+    .category-name-display {
+        font-family: 'Cinzel', serif;
+        font-weight: 700;
+        font-size: 1.8rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        margin: 0;
+    }
+    
+    .category-content {
+        background: white;
+    }
+    
+    /* Brand Statement Section */
+    .brand-statement-section {
+        background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .brand-statement-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("{% static 'images/cross-pattern.png' %}") repeat;
+        opacity: 0.05;
+    }
+    
+    .brand-statement-title {
+        font-family: 'Cinzel', serif;
+        font-weight: 800;
+        font-size: 2.5rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: #D4AF37;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 10px;
+    }
+    
+    .brand-statement-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background-color: #D4AF37;
+    }
+    
+    .brand-statement-text {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        font-style: italic;
+        line-height: 1.6;
+        color: #f0f0f0;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    /* Existing Styles */
+    .brand-title {
+        font-family: 'Cinzel', serif;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+    
+    .brand-subtitle {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        color: #666;
+    }
+    
+    .section-title {
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        position: relative;
+        padding-bottom: 15px;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 2px;
+        background-color: #D4AF37;
+    }
+    
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .product-image {
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+    
+    .product-name {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 1rem;
+        height: 50px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+    
+    .product-price {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.1rem;
+        color: #000;
+    }
+    
+    .product-category {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .story-title {
+        font-family: 'Cinzel', serif;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+    
+    .story-lead {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        color: #555;
+    }
+    
+    .story-text {
+        font-family: 'Playfair Display', serif;
+        line-height: 1.8;
+        color: #666;
+    }
+    
+    .btn {
+        border-radius: 0;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+    
+    .btn-dark {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+    }
+    
+    .btn-dark:hover {
+        background-color: #000;
+        border-color: #000;
+    }
+    
+    .btn-outline-dark {
+        border-color: #1a1a1a;
+        color: #1a1a1a;
+    }
+    
+    .btn-outline-dark:hover {
+        background-color: #1a1a1a;
+        color: white;
+    }
+    
+    .btn-outline-light {
+        border-color: rgba(255,255,255,0.5);
+        color: white;
+    }
+    
+    .btn-outline-light:hover {
+        background-color: white;
+        color: #1a1a1a;
+        border-color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .brand-statement-title {
+            font-size: 1.8rem;
+        }
+        
+        .brand-statement-text {
+            font-size: 1.1rem;
+        }
+        
+        .category-name-display {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add to cart form submission
+        const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+        
+        addToCartForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const productName = this.closest('.product-card').querySelector('.product-name').textContent.trim();
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update cart count in navbar
+                        const cartCountBadge = document.querySelector('.badge.bg-danger');
+                        if (cartCountBadge) {
+                            cartCountBadge.textContent = data.cart_count;
+                        }
+                        
+                        // Show success message
+                        showMessage('success', `"${productName}" added to cart!`);
+                    } else {
+                        showMessage('error', data.message || 'Failed to add item to cart.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('error', 'An error occurred. Please try again.');
+                });
+            });
+        });
+        
+        function showMessage(type, message) {
+            // Remove existing messages
+            const existingAlerts = document.querySelectorAll('.custom-alert');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            // Create new alert
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `custom-alert alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 80px; right: 20px; z-index: 1050; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+    });
+</script>
 {% endblock %}

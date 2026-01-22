@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Support - Tested Over Time{% endblock %}
+
+{% block extra_css %}
+<style>
+    .support-icon {
+        font-size: 3rem;
+        color: var(--color-gold);
+        margin-bottom: 1rem;
+    }
+    
+    .step-card {
+        border: none;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+        height: 100%;
+    }
+    
+    .step-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        background: var(--color-gold);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin: 0 auto 1rem;
+    }
+    
+    .issue-type-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+    
+    .badge-order { background: #e3f2fd; color: #1976d2; }
+    .badge-payment { background: #e8f5e9; color: #388e3c; }
+    .badge-shipping { background: #fff3e0; color: #f57c00; }
+    .badge-product { background: #f3e5f5; color: #7b1fa2; }
+    .badge-return { background: #ffebee; color: #d32f2f; }
+    .badge-account { background: #e8eaf6; color: #303f9f; }
+    .badge-other { background: #e0f2f1; color: #00796b; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header Section -->
+            <div class="text-center mb-5">
+                <div class="support-icon">
+                    <i class="bi bi-headset"></i>
+                </div>
+                <h1 class="h2 mb-3">Customer Support</h1>
+                <p class="text-muted lead mb-4">
+                    We're here to help! Get assistance with orders, products, or any questions you may have.
+                </p>
+                
+                {% if order_number %}
+                <div class="alert alert-info d-inline-flex align-items-center mb-0">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <div>
+                        <strong>Order Reference:</strong> {{ order_number }}
+                        {% if order %}
+                        - {{ order.get_status_display }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Support Steps -->
+            <div class="row mb-5">
+                <div class="col-md-4 mb-4">
+                    <div class="card step-card text-center p-4">
+                        <div class="step-number">1</div>
+                        <h5 class="card-title mb-3">Describe Your Issue</h5>
+                        <p class="card-text text-muted">
+                            Fill out the form below with details about your concern.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card step-card text-center p-4">
+                        <div class="step-number">2</div>
+                        <h5 class="card-title mb-3">We Review It</h5>
+                        <p class="card-text text-muted">
+                            Our team will review your inquiry within 24 hours.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card step-card text-center p-4">
+                        <div class="step-number">3</div>
+                        <h5 class="card-title mb-3">Get Resolution</h5>
+                        <p class="card-text text-muted">
+                            We'll contact you with a solution via email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Support Form -->
+            <div class="card border-0 shadow-sm mb-5">
+                <div class="card-header bg-dark text-white py-3">
+                    <h2 class="h5 mb-0">
+                        <i class="bi bi-chat-dots me-2"></i>Contact Form
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data" id="supportForm" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if messages %}
+                        <div class="mb-4">
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Name and Email -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.name.id_for_label }}" class="form-label">
+                                        Full Name *
+                                    </label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.name.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                                        Email Address *
+                                    </label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.email.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Issue Type and Order Number -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.issue_type.id_for_label }}" class="form-label">
+                                        What can we help you with? *
+                                    </label>
+                                    {{ form.issue_type }}
+                                    {% if form.issue_type.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.issue_type.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.order_number.id_for_label }}" class="form-label">
+                                        Order Number (if applicable)
+                                    </label>
+                                    {{ form.order_number }}
+                                    {% if form.order_number.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.order_number.errors.0 }}
+                                    </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">
+                                        Find this in your order confirmation email or in "My Orders"
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Subject -->
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="{{ form.subject.id_for_label }}" class="form-label">
+                                    Subject *
+                                </label>
+                                {{ form.subject }}
+                                {% if form.subject.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.subject.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Message -->
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="{{ form.message.id_for_label }}" class="form-label">
+                                    Message *
+                                </label>
+                                {{ form.message }}
+                                {% if form.message.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.message.errors.0 }}
+                                </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    Please provide as much detail as possible. Include order numbers, dates, and specific product names when relevant.
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <!-- File Attachment -->
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="{{ form.attach_file.id_for_label }}" class="form-label">
+                                    Attach File (optional)
+                                </label>
+                                {{ form.attach_file }}
+                                {% if form.attach_file.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.attach_file.errors.0 }}
+                                </div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    You can attach screenshots, photos, or documents (max 5MB, formats: JPG, PNG, PDF, DOC)
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-between align-items-center mt-5">
+                            <div>
+                                <a href="{% if order %}{% url 'shop:order_detail' order_id=order.order_number %}{% else %}{% url 'shop:order_list' %}{% endif %}" 
+                                   class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-1"></i> Back to Orders
+                                </a>
+                            </div>
+                            <div>
+                                <button type="reset" class="btn btn-light me-2">
+                                    <i class="bi bi-eraser me-1"></i> Clear Form
+                                </button>
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="bi bi-send me-1"></i> Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Support Information -->
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 border">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="bi bi-envelope-fill text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Email Support</h5>
+                            <p class="card-text text-muted">
+                                For non-urgent inquiries:
+                                <br>
+                                <strong>support@testedovertime.com</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 border">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="bi bi-clock-fill text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Response Time</h5>
+                            <p class="card-text text-muted">
+                                We aim to respond within:
+                                <br>
+                                <strong>24-48 hours</strong>
+                                <br>
+                                Mon-Fri, 9AM-5PM EST
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 border">
+                        <div class="card-body text-center p-4">
+                            <div class="mb-3">
+                                <i class="bi bi-info-circle-fill text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            <h5 class="card-title">Before Contacting</h5>
+                            <ul class="list-unstyled text-muted">
+                                <li class="mb-1">✓ Check order status</li>
+                                <li class="mb-1">✓ Review FAQ section</li>
+                                <li>✓ Have order number ready</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Form validation and enhancement
+    document.addEventListener('DOMContentLoaded', function() {
+        const supportForm = document.getElementById('supportForm');
+        
+        if (supportForm) {
+            // Add Bootstrap validation classes
+            supportForm.addEventListener('submit', function(event) {
+                if (!supportForm.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                supportForm.classList.add('was-validated');
+            });
+            
+            // Character counter for message
+            const messageTextarea = document.getElementById('id_message');
+            if (messageTextarea) {
+                const counter = document.createElement('small');
+                counter.className = 'form-text text-muted text-end d-block mt-1';
+                counter.id = 'messageCounter';
+                counter.textContent = `Characters: ${messageTextarea.value.length}`;
+                messageTextarea.parentNode.appendChild(counter);
+                
+                messageTextarea.addEventListener('input', function() {
+                    counter.textContent = `Characters: ${this.value.length}`;
+                    if (this.value.length < 10) {
+                        counter.classList.add('text-danger');
+                        counter.classList.remove('text-success');
+                    } else {
+                        counter.classList.remove('text-danger');
+                        counter.classList.add('text-success');
+                    }
+                });
+                
+                // Trigger initial count
+                messageTextarea.dispatchEvent(new Event('input'));
+            }
+            
+            // File size validation
+            const fileInput = document.getElementById('id_attach_file');
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    const maxSize = 5 * 1024 * 1024; // 5MB
+                    if (this.files[0] && this.files[0].size > maxSize) {
+                        alert('File size must be less than 5MB');
+                        this.value = '';
+                    }
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}

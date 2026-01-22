@@ -1,0 +1,338 @@
+<!-- templates/shop/verify_payment_pin.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verify Payment - Order #{{ order.order_number }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pin-input-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 30px 0;
+    }
+    .pin-digit {
+        width: 60px;
+        height: 70px;
+        font-size: 28px;
+        text-align: center;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        transition: all 0.3s;
+        font-weight: bold;
+    }
+    .pin-digit:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        outline: none;
+    }
+    .pin-digit.filled {
+        border-color: #198754;
+        background-color: rgba(25, 135, 84, 0.05);
+    }
+    .countdown-timer {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+    .pin-status {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    .pin-status.valid {
+        background-color: rgba(25, 135, 84, 0.1);
+        border: 1px solid #198754;
+        color: #0f5132;
+    }
+    .pin-status.expired {
+        background-color: rgba(220, 53, 69, 0.1);
+        border: 1px solid #dc3545;
+        color: #842029;
+    }
+    .attempts-warning {
+        background-color: rgba(255, 193, 7, 0.1);
+        border: 1px solid #ffc107;
+        color: #664d03;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>Verify Payment
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <!-- Order Information -->
+                    <div class="text-center mb-4">
+                        <h4 class="mb-3">Order #{{ order.order_number }}</h4>
+                        <div class="row">
+                            <div class="col-6 text-end">
+                                <strong>Total Amount:</strong>
+                            </div>
+                            <div class="col-6">
+                                ${{ order.total }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-end">
+                                <strong>Payment Method:</strong>
+                            </div>
+                            <div class="col-6">
+                                {{ order.get_payment_method_display }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- PIN Status -->
+                    {% if is_pin_valid %}
+                    <div class="pin-status valid mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle me-3 fs-4"></i>
+                            <div>
+                                <h5 class="mb-1">Payment PIN Active</h5>
+                                <p class="mb-0">
+                                    Enter the 6-digit PIN provided by support after payment.
+                                    <br>
+                                    <strong>Expires in:</strong> {{ time_left }}
+                                    <br>
+                                    <strong>Attempts remaining:</strong> {{ remaining_attempts }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="pin-status expired mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+                            <div>
+                                <h5 class="mb-1">No Active Payment PIN</h5>
+                                <p class="mb-0">
+                                    Please contact support if you've already sent payment.
+                                    {% if remaining_attempts <= 0 %}
+                                    <br>
+                                    <span class="text-danger">
+                                        <i class="fas fa-lock me-1"></i>
+                                        Too many failed attempts. Account locked.
+                                    </span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- PIN Entry Form -->
+                    {% if is_pin_valid and remaining_attempts > 0 %}
+                    <form method="post" id="pinForm">
+                        {% csrf_token %}
+
+                        <!-- Error Messages -->
+                        {% if messages %}
+                        <div class="alert alert-danger">
+                            {% for message in messages %}
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- PIN Input -->
+                        <div class="mb-4">
+                            <label for="payment_pin" class="form-label">Enter Payment PIN</label>
+                            <div class="pin-input-container">
+                                {% for i in "123456" %}
+                                <input type="text"
+                                       maxlength="1"
+                                       class="pin-digit"
+                                       data-index="{{ forloop.counter0 }}"
+                                       inputmode="numeric"
+                                       pattern="[0-9]">
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" name="payment_pin" id="fullPin">
+                            <div class="form-text text-center">
+                                Enter the 6-digit PIN provided by support after you sent your payment.
+                            </div>
+                        </div>
+
+                        <!-- Attempts Warning -->
+                        {% if remaining_attempts < 5 %}
+                        <div class="attempts-warning mb-4">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Warning:</strong> {{ remaining_attempts }} attempt{{ remaining_attempts|pluralize }} remaining
+                        </div>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-check me-2"></i>Verify Payment
+                            </button>
+
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'shop:order_detail' order.id %}" class="btn btn-outline-secondary flex-grow-1">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Order
+                                </a>
+                                <a href="{% url 'shop:contact_support' %}?order={{ order.order_number }}" class="btn btn-outline-primary flex-grow-1">
+                                    <i class="fas fa-headset me-2"></i>Contact Support
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                    {% else %}
+                    <!-- No Valid PIN or Too Many Attempts -->
+                    <div class="text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-lock fa-4x text-muted mb-3"></i>
+                            <h4>Unable to Verify Payment</h4>
+                            <p class="text-muted">
+                                {% if not is_pin_valid %}
+                                No valid payment PIN available. Please contact support.
+                                {% else %}
+                                Too many failed attempts. Please contact support.
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'shop:contact_support' %}?order={{ order.order_number }}" class="btn btn-primary">
+                                <i class="fas fa-headset me-2"></i>Contact Support
+                            </a>
+                            <a href="{% url 'shop:order_detail' order.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Order
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Instructions -->
+                    <div class="mt-4 pt-4 border-top">
+                        <h6><i class="fas fa-info-circle me-2"></i>How to Verify Your Payment:</h6>
+                        <ol class="mb-0">
+                            <li>Send payment via {{ order.get_payment_method_display }} using details from support</li>
+                            <li>Contact support and provide proof of payment</li>
+                            <li>Support will generate and share a 6-digit PIN with you</li>
+                            <li>Enter that PIN here to confirm your payment</li>
+                            <li>Your order will automatically move to "Processing" status</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const pinDigits = document.querySelectorAll('.pin-digit');
+        const fullPinInput = document.getElementById('fullPin');
+        const pinForm = document.getElementById('pinForm');
+
+        // Initialize full pin
+        let fullPin = '';
+
+        // Auto-focus first pin digit
+        if (pinDigits.length > 0) {
+            pinDigits[0].focus();
+        }
+
+        // Handle pin digit input
+        pinDigits.forEach((digit, index) => {
+            digit.addEventListener('input', function(e) {
+                const value = this.value;
+
+                // Only allow numbers
+                if (!/^\d*$/.test(value)) {
+                    this.value = '';
+                    return;
+                }
+
+                // Update full pin
+                const pinArray = fullPin.split('');
+                pinArray[index] = value || '';
+                fullPin = pinArray.join('');
+                fullPinInput.value = fullPin;
+
+                // Add filled class
+                if (value) {
+                    this.classList.add('filled');
+                } else {
+                    this.classList.remove('filled');
+                }
+
+                // Auto-focus next input
+                if (value && index < pinDigits.length - 1) {
+                    pinDigits[index + 1].focus();
+                }
+
+                // Auto-submit when complete
+                if (fullPin.length === 6) {
+                    pinForm.submit();
+                }
+            });
+
+            // Handle backspace
+            digit.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !this.value && index > 0) {
+                    pinDigits[index - 1].focus();
+                }
+            });
+
+            // Handle paste
+            digit.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text');
+
+                if (/^\d{6}$/.test(pastedData)) {
+                    // Fill all digits with pasted data
+                    for (let i = 0; i < Math.min(pastedData.length, 6); i++) {
+                        if (pinDigits[i]) {
+                            pinDigits[i].value = pastedData[i];
+                            pinDigits[i].classList.add('filled');
+                        }
+                    }
+                    fullPin = pastedData.slice(0, 6);
+                    fullPinInput.value = fullPin;
+
+                    // Auto-submit
+                    setTimeout(() => pinForm.submit(), 100);
+                }
+            });
+        });
+
+        // Form validation
+        if (pinForm) {
+            pinForm.addEventListener('submit', function(e) {
+                if (fullPin.length !== 6) {
+                    e.preventDefault();
+                    alert('Please enter a complete 6-digit PIN');
+                    return false;
+                }
+
+                // Disable submit button to prevent double submission
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Verifying...';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

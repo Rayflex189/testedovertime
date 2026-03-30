@@ -1,105 +1,359 @@
+/* Import custom fonts for Tested Over Time design */
 :root {
-    --primary-color: #1a365d;
-    --secondary-color: #e53e3e;
-    --accent-color: #d69e2e;
-    --light-bg: #f8f9fa;
+    --font-heading: 'Montserrat', sans-serif;
+    --font-body: 'Open Sans', sans-serif;
+    --font-special: 'Playfair Display', serif;
 }
 
+/* General Typography */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.6;
     color: #333;
+    letter-spacing: 0.01em;
 }
 
-.hero-section {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+/* Main Brand Title - Large, bold, uppercase like in images */
+.main-brand-title {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 3.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    color: #000;
 }
 
+@media (max-width: 768px) {
+    .main-brand-title {
+        font-size: 2.5rem;
+        letter-spacing: 0.1em;
+    }
+}
+
+/* Brand Logo/Tagline */
+.brand-logo {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 1.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #000;
+}
+
+.brand-tagline {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.2rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #444;
+}
+
+/* Section Titles */
+.section-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #000;
+}
+
+/* Category Titles */
+.category-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #000;
+}
+
+.category-box {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Product Cards */
 .product-card {
-    transition: transform 0.3s, box-shadow 0.3s;
-    border: 1px solid #dee2e6;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
 }
 
-.card-img-top {
-    height: 250px;
+.product-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 300px;
+}
+
+.product-img {
+    height: 100%;
     object-fit: cover;
+    transition: transform 0.5s ease;
 }
 
-.btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+.product-card:hover .product-img {
+    transform: scale(1.05);
 }
 
-.btn-primary:hover {
-    background-color: #2c5282;
-    border-color: #2c5282;
+.product-title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    color: #222;
+    min-height: 3rem;
 }
 
-.navbar-brand {
-    color: var(--primary-color) !important;
+.product-price {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    letter-spacing: 0.02em;
+}
+
+/* Brand Story Section */
+.brand-story-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.brand-story-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #000 0%, #6c757d 50%, #000 100%);
+}
+
+.story-title {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 2.2rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #000;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.story-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background-color: #000;
+}
+
+.story-paragraph {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #444;
+}
+
+.story-highlight {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #000;
+    padding-left: 1.5rem;
+    border-left: 4px solid #000;
+}
+
+.faith-statement {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    position: relative;
+    padding: 1.5rem 0;
+}
+
+.faith-statement::before,
+.faith-statement::after {
+    content: "—";
+    position: absolute;
+    color: #6c757d;
+    font-weight: 300;
+}
+
+.faith-statement::before {
+    left: 0;
+}
+
+.faith-statement::after {
+    right: 0;
+}
+
+.story-italic {
+    font-family: var(--font-special);
+    font-weight: 500;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Verse Section */
+.verse-section {
+    position: relative;
+    background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('../images/cross-pattern.png');
+    background-size: cover;
+}
+
+.verse-question {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+    color: #333;
+}
+
+.verse-reference {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 2.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #000;
+    position: relative;
+    display: inline-block;
+    padding: 0 2rem;
+}
+
+.verse-reference::before,
+.verse-reference::after {
+    content: "•";
+    position: absolute;
+    color: #000;
     font-size: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
-.nav-link {
+.verse-reference::before {
+    left: 0;
+}
+
+.verse-reference::after {
+    right: 0;
+}
+
+.verse-text {
+    font-family: var(--font-special);
     font-weight: 500;
+    font-size: 1.8rem;
+    color: #222;
+    font-style: normal;
 }
 
-/* Authentication Forms */
-.auth-card {
-    border: none;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+/* Buttons */
+.btn {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    padding: 0.75rem 2rem;
+    transition: all 0.3s ease;
+    border-width: 2px;
 }
 
-.auth-header {
-    border-radius: 15px 15px 0 0 !important;
-    padding: 1.5rem !important;
+.btn-lg {
+    padding: 1rem 3rem;
+    font-size: 1.1rem;
 }
 
-.auth-btn {
-    padding: 12px;
-    border-radius: 10px;
-    font-weight: 500;
+.btn-dark {
+    background-color: #000;
+    border-color: #000;
 }
 
-/* Form enhancements */
-.form-control {
-    padding: 12px;
-    border-radius: 8px;
-    border: 2px solid #e1e5e9;
-    transition: all 0.3s;
+.btn-dark:hover {
+    background-color: #333;
+    border-color: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-.form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.25rem rgba(26, 54, 93, 0.25);
-}
-
-/* Social buttons */
-.btn-outline-primary:hover {
-    background-color: var(--primary-color);
-    color: white;
+.btn-outline-dark {
+    color: #000;
+    border-color: #000;
 }
 
 .btn-outline-dark:hover {
-    background-color: #343a40;
-    color: white;
+    background-color: #000;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-/* Checkbox styling */
-.form-check-input:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+/* Footer Brand */
+.footer-brand {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 1.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
 }
 
-/* Links */
-a.text-primary:hover {
-    color: #2c5282 !important;
-    text-decoration: underline;
+/* Navigation */
+.nav-link {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.navbar-brand {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .main-brand-title {
+        font-size: 2.2rem;
+    }
+    
+    .brand-tagline {
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.6rem;
+    }
+    
+    .story-title {
+        font-size: 1.8rem;
+    }
+    
+    .verse-reference {
+        font-size: 2rem;
+    }
+    
+    .verse-text {
+        font-size: 1.5rem;
+    }
 }

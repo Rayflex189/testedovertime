@@ -1,0 +1,409 @@
+<!-- templates/shop/support_payment_management.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment Management - Order #{{ order.order_number }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pin-display {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        font-size: 2rem;
+        letter-spacing: 10px;
+        text-align: center;
+        margin: 20px 0;
+        font-family: monospace;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .action-card {
+        transition: transform 0.3s ease;
+        border: 1px solid #e0e0e0;
+        height: 100%;
+    }
+    .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .status-badge {
+        font-size: 0.9rem;
+        padding: 5px 12px;
+        border-radius: 20px;
+    }
+    .debug-info {
+        font-family: monospace;
+        font-size: 0.85rem;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        border-left: 4px solid #6c757d;
+        overflow-x: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-1">
+                        <i class="fas fa-credit-card me-2"></i>
+                        Payment Management
+                    </h1>
+                    <p class="text-muted mb-0">Order #{{ order.order_number }}</p>
+                </div>
+                <div>
+                    <a href="{% url 'admin:shop_order_changelist' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                    </a>
+                </div>
+            </div>
+
+            <!-- Order Summary Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Customer Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="120">Customer:</th>
+                                    <td>{{ order.user.get_full_name|default:order.user.username }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td>{{ order.user.email }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Order Date:</th>
+                                    <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status:</th>
+                                    <td>
+                                        <span class="badge bg-{{ order.status|lower }}">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Payment Details</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th width="120">Total Amount:</th>
+                                    <td class="fw-bold">${{ order.total }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Payment Method:</th>
+                                    <td>{{ order.get_payment_method_display }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Payment Status:</th>
+                                    <td>
+                                        {% if order.payment_status %}
+                                        <span class="badge bg-success">Confirmed</span>
+                                        {% else %}
+                                        <span class="badge bg-warning">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if order.payment_status %}
+                                <tr>
+                                    <th>Confirmed:</th>
+                                    <td>{{ order.payment_confirmed_at|date:"M d, Y H:i" }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New PIN Display -->
+            {% if generated_pin %}
+            <div class="alert alert-success alert-dismissible fade show">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-key fa-3x me-3"></i>
+                    <div class="flex-grow-1">
+                        <h4 class="alert-heading">New Payment PIN Generated!</h4>
+                        <p class="mb-0">Share this PIN with the customer. It will expire in 24 hours.</p>
+                    </div>
+                </div>
+                <div class="pin-display mt-3">
+                    {{ generated_pin }}
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endif %}
+
+            <!-- Payment PIN Status Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        Current Payment PIN Status
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if order.payment_pin %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <strong>Current PIN:</strong>
+                                <div class="display-4 font-monospace text-center my-3">
+                                    {{ order.payment_pin }}
+                                </div>
+                            </div>
+                            <p><strong>Generated:</strong> {{ order.payment_pin_generated_at|date:"M d, Y H:i" }}</p>
+                            <p><strong>Expires:</strong> {{ order.payment_pin_expires_at|date:"M d, Y H:i" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <strong>Status:</strong><br>
+                                {% if is_pin_valid %}
+                                <span class="badge bg-success fs-6 mt-2">Active ({{ order.payment_pin_expires_in }})</span>
+                                {% else %}
+                                <span class="badge bg-danger fs-6 mt-2">Expired</span>
+                                {% endif %}
+                            </div>
+                            <p><strong>Failed Attempts:</strong> {{ order.payment_attempts }} / 5</p>
+                            <p><strong>Last Attempt:</strong> {{ order.last_payment_attempt|date:"M d, Y H:i"|default:"Never" }}</p>
+                            <p><strong>Can Generate New:</strong> {{ can_generate_pin|yesno:"Yes,No" }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-key fa-4x text-muted mb-3"></i>
+                        <h4>No Payment PIN Generated</h4>
+                        <p class="text-muted">Generate a PIN to allow customer payment verification.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Action Cards -->
+            {% if not order.payment_status %}
+            <div class="row g-4 mb-4">
+                <!-- Generate PIN -->
+                <div class="col-md-4">
+                    <div class="card action-card h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-key fa-3x text-primary"></i>
+                            </div>
+                            <h5>Generate PIN</h5>
+                            <p class="text-muted small">Create new 6-digit verification PIN</p>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="generate_pin">
+                                <button type="submit" class="btn btn-primary"
+                                        {% if not can_generate_pin %}disabled title="Cannot generate new PIN yet"{% endif %}>
+                                    <i class="fas fa-plus me-2"></i>Generate PIN
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resend PIN -->
+                <div class="col-md-4">
+                    <div class="card action-card h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-redo fa-3x text-warning"></i>
+                            </div>
+                            <h5>Resend PIN</h5>
+                            <p class="text-muted small">Generate new PIN if previous was lost</p>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="resend_pin">
+                                <button type="submit" class="btn btn-warning"
+                                        {% if not order.payment_pin %}disabled title="No PIN to resend"{% endif %}>
+                                    <i class="fas fa-redo me-2"></i>Resend PIN
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confirm Payment -->
+                <div class="col-md-4">
+                    <div class="card action-card h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-check-circle fa-3x text-success"></i>
+                            </div>
+                            <h5>Confirm Payment</h5>
+                            <p class="text-muted small">Manually confirm payment</p>
+                            <form method="post" onsubmit="return confirm('Are you sure you want to manually confirm payment for this order?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="confirm_payment">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-check me-2"></i>Confirm Payment
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reset PIN -->
+                <div class="col-md-6">
+                    <div class="card action-card h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-eraser fa-3x text-danger"></i>
+                            </div>
+                            <h5>Reset PIN</h5>
+                            <p class="text-muted small">Clear current PIN and reset attempts</p>
+                            <form method="post" onsubmit="return confirm('Are you sure you want to reset the PIN? This will clear the current PIN.');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="reset_pin">
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="fas fa-eraser me-2"></i>Reset PIN
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clear Attempts -->
+                <div class="col-md-6">
+                    <div class="card action-card h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-unlock fa-3x text-info"></i>
+                            </div>
+                            <h5>Clear Attempts</h5>
+                            <p class="text-muted small">Reset failed attempt counter</p>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="clear_attempts">
+                                <button type="submit" class="btn btn-info"
+                                        {% if order.payment_attempts == 0 %}disabled{% endif %}>
+                                    <i class="fas fa-unlock me-2"></i>Clear Attempts
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <!-- Payment Already Confirmed -->
+            <div class="alert alert-success">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle fa-3x me-3"></i>
+                    <div>
+                        <h4 class="alert-heading">Payment Already Confirmed</h4>
+                        <p class="mb-0">This order's payment was verified on {{ order.payment_confirmed_at|date:"M d, Y H:i" }}</p>
+                        {% if order.payment_verified_by %}
+                        <p class="mb-0">Verified by: {{ order.payment_verified_by.get_full_name|default:order.payment_verified_by.username }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Instructions -->
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Instructions for Support
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li><strong>Verify Payment:</strong> Check your {{ order.get_payment_method_display }} account for the customer's payment</li>
+                        <li><strong>Generate PIN:</strong> Click "Generate PIN" to create a 6-digit verification code</li>
+                        <li><strong>Share PIN:</strong> Provide the PIN to the customer via chat, email, or SMS</li>
+                        <li><strong>Customer Verification:</strong> Customer enters the PIN on their order page</li>
+                        <li><strong>Auto-Processing:</strong> Upon successful PIN entry, order automatically moves to "Processing"</li>
+                        <li><strong>Manual Confirmation:</strong> Use "Confirm Payment" only if PIN system fails</li>
+                    </ol>
+
+                    <div class="mt-3">
+                        <strong>Important Notes:</strong>
+                        <ul class="mb-0">
+                            <li>PINs expire after 24 hours</li>
+                            <li>Maximum 5 failed attempts before account lock</li>
+                            <li>Always verify payment before generating PIN</li>
+                            <li>Keep PIN secure - share via secure channels</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Debug Information (Staff Only) -->
+            {% if request.user.is_staff %}
+            <div class="card mt-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bug me-2"></i>
+                        Debug Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="debug-info">
+                        <strong>Current Time:</strong> {{ current_time|date:"Y-m-d H:i:s" }}<br><br>
+
+                        <strong>Order ID:</strong> {{ order.id }}<br>
+                        <strong>Order Number:</strong> {{ order.order_number }}<br><br>
+
+                        <strong>Payment PIN Check:</strong><br>
+                        Has PIN: {{ order.payment_pin|yesno:"Yes,No" }}<br>
+                        PIN Length: {{ order.payment_pin|length|default:0 }}<br>
+                        PIN Valid: {{ is_pin_valid|yesno:"Yes,No" }}<br>
+                        Can Generate: {{ can_generate_pin|yesno:"Yes,No" }}<br><br>
+
+                        <strong>Database State:</strong><br>
+                        payment_pin: "{{ order.payment_pin }}"<br>
+                        payment_status: {{ order.payment_status }}<br>
+                        payment_attempts: {{ order.payment_attempts }}<br>
+                        status: {{ order.status }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-refresh every 30 seconds if PIN is active
+        {% if is_pin_valid %}
+        setTimeout(function() {
+            location.reload();
+        }, 30000);
+        {% endif %}
+
+        // Show PIN copy confirmation
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const pinElement = alert.querySelector('.pin-display');
+            if (pinElement) {
+                pinElement.addEventListener('click', function() {
+                    const pin = this.textContent.trim();
+                    navigator.clipboard.writeText(pin).then(() => {
+                        const originalText = this.textContent;
+                        this.textContent = 'Copied!';
+                        setTimeout(() => {
+                            this.textContent = originalText;
+                        }, 2000);
+                    });
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

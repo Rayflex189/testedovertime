@@ -1,0 +1,353 @@
+<!-- templates/admin/base_site.html -->
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary-color: #0d6efd;
+        --success-color: #198754;
+        --warning-color: #ffc107;
+        --danger-color: #dc3545;
+        --info-color: #0dcaf0;
+        --dark-color: #1a1a1a;
+        --gold-color: #D4AF37;
+    }
+
+    body {
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    #header {
+        background: var(--dark-color);
+        color: white;
+        border-bottom: 3px solid var(--gold-color);
+    }
+
+    #branding h1, #branding h1 a:link, #branding h1 a:visited {
+        color: white;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    #branding h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.5rem;
+    }
+
+    .module h2, .module caption, .inline-group h2 {
+        background: var(--dark-color);
+        color: white;
+        border: none;
+    }
+
+    .button, input[type=submit], input[type=button], .submit-row input, a.button {
+        background: var(--dark-color);
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        transition: all 0.3s ease;
+    }
+
+    .button:hover, input[type=submit]:hover, input[type=button]:hover, a.button:hover {
+        background: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .button.default, input[type=submit].default, .submit-row input.default {
+        background: var(--gold-color);
+        color: var(--dark-color);
+        font-weight: 700;
+    }
+
+    .button.default:hover, input[type=submit].default:hover {
+        background: #c19b2e;
+    }
+
+    /* Payment action buttons */
+    .payment-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .payment-button:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        text-decoration: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .payment-button-success {
+        background-color: var(--success-color);
+        color: white;
+    }
+
+    .payment-button-warning {
+        background-color: var(--warning-color);
+        color: black;
+    }
+
+    .payment-button-info {
+        background-color: var(--info-color);
+        color: white;
+    }
+
+    .payment-button-danger {
+        background-color: var(--danger-color);
+        color: white;
+    }
+
+    /* Status badges */
+    .badge {
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 12px;
+        display: inline-block;
+    }
+
+    .badge-success { 
+        background: var(--success-color); 
+        color: white; 
+    }
+    .badge-warning { 
+        background: var(--warning-color); 
+        color: black; 
+    }
+    .badge-danger { 
+        background: var(--danger-color); 
+        color: white; 
+    }
+    .badge-info { 
+        background: var(--info-color); 
+        color: black; 
+    }
+    .badge-secondary { 
+        background: #6c757d; 
+        color: white; 
+    }
+
+    /* Payment PIN display */
+    .payment-pin-display {
+        font-family: 'Courier New', monospace;
+        font-size: 18px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        padding: 8px 12px;
+        background: #f8f9fa;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+        display: inline-block;
+        margin: 5px 0;
+    }
+
+    /* Alert boxes */
+    .admin-alert {
+        padding: 10px 15px;
+        border-radius: 4px;
+        margin: 10px 0;
+        border: 1px solid transparent;
+    }
+
+    .admin-alert-success {
+        background-color: #d1e7dd;
+        border-color: #badbcc;
+        color: #0f5132;
+    }
+
+    .admin-alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c2c7;
+        color: #842029;
+    }
+
+    .admin-alert-warning {
+        background-color: #fff3cd;
+        border-color: #ffecb5;
+        color: #664d03;
+    }
+
+    .admin-alert-info {
+        background-color: #cff4fc;
+        border-color: #b6effb;
+        color: #055160;
+    }
+
+    /* Table improvements */
+    #changelist table thead th {
+        background: #f8f9fa;
+        font-weight: 600;
+    }
+
+    #changelist table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    /* Form improvements */
+    .form-row {
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 4px;
+    }
+
+    /* Fieldset styling */
+    fieldset.module {
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    /* Breadcrumbs */
+    .breadcrumbs {
+        background: #f8f9fa;
+        padding: 10px 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--gold-color);
+    }
+
+    /* Messages styling */
+    ul.messagelist li {
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        border-left: 4px solid;
+    }
+
+    ul.messagelist li.success {
+        background-color: #d1e7dd;
+        border-color: var(--success-color);
+        color: #0f5132;
+    }
+
+    ul.messagelist li.error {
+        background-color: #f8d7da;
+        border-color: var(--danger-color);
+        color: #842029;
+    }
+
+    ul.messagelist li.warning {
+        background-color: #fff3cd;
+        border-color: var(--warning-color);
+        color: #664d03;
+    }
+
+    ul.messagelist li.info {
+        background-color: #cff4fc;
+        border-color: var(--info-color);
+        color: #055160;
+    }
+
+    /* Dashboard styling */
+    .dashboard #content {
+        width: 100%;
+    }
+
+    .dashboard .module table th {
+        width: 100%;
+    }
+
+    .dashboard .module table td {
+        white-space: nowrap;
+    }
+
+    .dashboard .module table td a {
+        display: block;
+        padding: 8px;
+        background: #f8f9fa;
+        border-radius: 4px;
+        margin: 2px 0;
+    }
+
+    /* Order status colors */
+    .status-pending { 
+        color: #6c757d; 
+    }
+    .status-processing { 
+        color: #fd7e14; 
+    }
+    .status-shipped { 
+        color: var(--info-color); 
+    }
+    .status-delivered { 
+        color: var(--success-color); 
+    }
+    .status-cancelled { 
+        color: var(--danger-color); 
+    }
+    .status-refunded { 
+        color: #6f42c1; 
+    }
+
+    /* Responsive improvements */
+    @media (max-width: 768px) {
+        #content {
+            padding: 15px;
+        }
+        
+        .form-row {
+            padding: 10px;
+        }
+        
+        .payment-button {
+            margin-bottom: 8px;
+            width: 100%;
+            justify-content: flex-start;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <i class="fas fa-store me-2"></i>
+        {{ site_header|default:_('Django administration') }}
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block footer %}
+<div id="footer" style="background: var(--dark-color); color: white; padding: 20px 0; margin-top: 30px; border-top: 3px solid var(--gold-color);">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <p style="margin: 0; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
+                    <i class="fas fa-shield-alt me-1"></i> Secure Admin Portal
+                </p>
+            </div>
+            <div class="col-md-6 text-end">
+                <p style="margin: 0; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
+                    &copy; {% now "Y" %} Tested Over Time Admin
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -39,7 +39,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'accounts:order_history' %}">
-                                <i class="bi bi-bag me-2"></i> My Orders
+                                <i class="bi bi-bag me-2"></i> My Rentals
                                 <span class="badge bg-primary rounded-pill float-end">{{ user.orders.count }}</span>
                             </a>
                         </li>
@@ -66,7 +66,7 @@
                 <div class="card-body">
                     <h4 class="card-title mb-3">Welcome back, {{ user.first_name|default:user.username }}!</h4>
                     <p class="card-text">
-                        Manage your account settings, view order history, and update your preferences here.
+                        Manage your account settings, view rental history, and update your preferences here.
                     </p>
                 </div>
             </div>
@@ -132,10 +132,10 @@
                 </div>
             </div>
 
-            <!-- Recent Orders -->
+            <!-- Recent Rentals -->
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-bag me-2"></i> Recent Orders</h5>
+                    <h5 class="mb-0"><i class="bi bi-bag me-2"></i> Recent Rentals</h5>
                     <a href="{% url 'accounts:order_history' %}" class="btn btn-light btn-sm">View All</a>
                 </div>
                 <div class="card-body">
@@ -144,7 +144,7 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Order #</th>
+                                        <th>Rental #</th>
                                         <th>Date</th>
                                         <th>Items</th>
                                         <th>Total</th>
@@ -177,9 +177,9 @@
                     {% else %}
                         <div class="text-center py-4">
                             <i class="bi bi-bag display-6 text-muted mb-3"></i>
-                            <p class="text-muted">You haven't placed any orders yet.</p>
+                            <p class="text-muted">You haven't placed any rentals yet.</p>
                             <a href="{% url 'shop:product_list' %}" class="btn btn-primary">
-                                Start Shopping
+                                Start Browsing
                             </a>
                         </div>
                     {% endif %}
@@ -201,7 +201,7 @@
                                     Newsletter Subscribed
                                 </label>
                                 <small class="form-text text-muted d-block">
-                                    Receive updates about new products and promotions
+                                    Receive updates about new items and promotions
                                 </small>
                             </div>
                         </div>

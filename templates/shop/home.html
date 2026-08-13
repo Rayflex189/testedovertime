@@ -10,8 +10,8 @@
         <div class="row align-items-center">
             <div class="col-lg-6">
                 <h1 class="display-4 fw-bold mb-4 brand-title">TESTED OVER TIME</h1>
-                <p class="lead mb-4 brand-subtitle">MORE THAN A BRAND. A MOVEMENT FOR THE REDEEMED.</p>
-                <a href="{% url 'shop:product_list' %}" class="btn btn-dark btn-lg px-5">Shop Collection</a>
+                <p class="lead mb-4 brand-subtitle">MORE THAN A RENTAL. AN EXPERIENCE FOR THE REDEEMED.</p>
+                <a href="{% url 'shop:product_list' %}" class="btn btn-dark btn-lg px-5">Browse Rentals</a>
             </div>
             <div class="col-lg-6">
                 <img src="{% static 'images/hero_image.webp' %}" class="img-fluid rounded shadow" alt="Hero Image" onerror="this.src='{% static 'images/placeholder.jpg' %}'">
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="category-content text-center py-4">
-                    <a href="{% url 'shop:product_list' %}?category={{ category.slug }}" class="btn btn-outline-dark px-5">Shop Now</a>
+                    <a href="{% url 'shop:product_list' %}?category={{ category.slug }}" class="btn btn-outline-dark px-5">View Rentals</a>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
 <!-- Featured Products -->
 {% if featured_products %}
 <section class="container py-5">
-    <h2 class="text-center mb-5 section-title">Most Popular</h2>
+    <h2 class="text-center mb-5 section-title">Most Popular Rentals</h2>
     <div class="row g-4">
         {% for product in featured_products %}
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
@@ -121,7 +121,7 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="quantity" value="1">
                                 <button type="submit" class="btn btn-dark w-100">
-                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                    <i class="bi bi-cart-plus"></i> Rent Now
                                 </button>
                             </form>
                             {% else %}
@@ -152,7 +152,7 @@
         {% endfor %}
     </div>
     <div class="text-center mt-4">
-        <a href="{% url 'shop:product_list' %}" class="btn btn-outline-dark px-5">View All Products</a>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-outline-dark px-5">View All Rentals</a>
     </div>
 </section>
 {% endif %}
@@ -199,7 +199,7 @@
                                     {% csrf_token %}
                                     <input type="hidden" name="quantity" value="1">
                                     <button type="submit" class="btn btn-dark w-100 btn-sm">
-                                        <i class="bi bi-cart-plus"></i> Add to Cart
+                                        <i class="bi bi-cart-plus"></i> Rent Now
                                     </button>
                                 </form>
                                 {% else %}
@@ -236,8 +236,8 @@
                 <h2 class="fw-bold mb-4 story-title">OUR STORY</h2>
                 <p class="lead story-lead">Tested Over Time was born from brokenness, built through faith, and refined by the hands of Jesus.</p>
                 <p class="story-text">It's not about perfection – it's about perseverance. It's for the ones who've been through the dark, wrestled with doubt, and still chose to stand back up and follow the light.</p>
-                <p class="story-text">Every design, every message, every stitch carries a story — not of who we were, but of who God is making us to be.</p>
-                <a href="#" class="btn btn-outline-dark px-4">Learn More</a>
+                <p class="story-text">Every item, every rental, every experience carries a story — not of who we were, but of who God is making us to be.</p>
+                <a href="#" class="btn btn-outline-dark px-4">About Us</a>
             </div>
         </div>
     </div>
@@ -249,7 +249,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6 text-center">
                 <h3 class="fw-bold mb-3">STAY IN THE LOOP</h3>
-                <p class="text-muted mb-4">Subscribe to get updates on new products and exclusive offers.</p>
+                <p class="text-muted mb-4">Subscribe to get updates on new items and exclusive offers.</p>
                 <form class="d-flex">
                     <input type="email" class="form-control rounded-0" placeholder="Your email address" required>
                     <button type="submit" class="btn btn-dark rounded-0 ms-2">Subscribe</button>
@@ -549,7 +549,7 @@
                         }
                         
                         // Show success message
-                        showMessage('success', `"${productName}" added to cart!`);
+                        showMessage('success', `"${productName}" added to rental cart!`);
                     } else {
                         showMessage('error', data.message || 'Failed to add item to cart.');
                     }

@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Payment Management - Order #{{ order.order_number }}{% endblock %}
+{% block title %}Payment Management - Rental #{{ order.order_number }}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -55,19 +55,19 @@
                         <i class="fas fa-credit-card me-2"></i>
                         Payment Management
                     </h1>
-                    <p class="text-muted mb-0">Order #{{ order.order_number }}</p>
+                    <p class="text-muted mb-0">Rental #{{ order.order_number }}</p>
                 </div>
                 <div>
                     <a href="{% url 'admin:shop_order_changelist' %}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                        <i class="fas fa-arrow-left me-2"></i>Back to Rentals
                     </a>
                 </div>
             </div>
 
-            <!-- Order Summary Card -->
+            <!-- Rental Summary Card -->
             <div class="card mb-4">
                 <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0">Order Summary</h5>
+                    <h5 class="mb-0">Rental Summary</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -83,7 +83,7 @@
                                     <td>{{ order.user.email }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Order Date:</th>
+                                    <th>Rental Date:</th>
                                     <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
                                 </tr>
                                 <tr>
@@ -304,7 +304,7 @@
                     <i class="fas fa-check-circle fa-3x me-3"></i>
                     <div>
                         <h4 class="alert-heading">Payment Already Confirmed</h4>
-                        <p class="mb-0">This order's payment was verified on {{ order.payment_confirmed_at|date:"M d, Y H:i" }}</p>
+                        <p class="mb-0">This rental's payment was verified on {{ order.payment_confirmed_at|date:"M d, Y H:i" }}</p>
                         {% if order.payment_verified_by %}
                         <p class="mb-0">Verified by: {{ order.payment_verified_by.get_full_name|default:order.payment_verified_by.username }}</p>
                         {% endif %}
@@ -326,8 +326,8 @@
                         <li><strong>Verify Payment:</strong> Check your {{ order.get_payment_method_display }} account for the customer's payment</li>
                         <li><strong>Generate PIN:</strong> Click "Generate PIN" to create a 6-digit verification code</li>
                         <li><strong>Share PIN:</strong> Provide the PIN to the customer via chat, email, or SMS</li>
-                        <li><strong>Customer Verification:</strong> Customer enters the PIN on their order page</li>
-                        <li><strong>Auto-Processing:</strong> Upon successful PIN entry, order automatically moves to "Processing"</li>
+                        <li><strong>Customer Verification:</strong> Customer enters the PIN on their rental page</li>
+                        <li><strong>Auto-Processing:</strong> Upon successful PIN entry, rental automatically moves to "Processing"</li>
                         <li><strong>Manual Confirmation:</strong> Use "Confirm Payment" only if PIN system fails</li>
                     </ol>
 
@@ -356,8 +356,8 @@
                     <div class="debug-info">
                         <strong>Current Time:</strong> {{ current_time|date:"Y-m-d H:i:s" }}<br><br>
 
-                        <strong>Order ID:</strong> {{ order.id }}<br>
-                        <strong>Order Number:</strong> {{ order.order_number }}<br><br>
+                        <strong>Rental ID:</strong> {{ order.id }}<br>
+                        <strong>Rental Number:</strong> {{ order.order_number }}<br><br>
 
                         <strong>Payment PIN Check:</strong><br>
                         Has PIN: {{ order.payment_pin|yesno:"Yes,No" }}<br>

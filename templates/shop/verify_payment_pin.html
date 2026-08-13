@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Verify Payment - Order #{{ order.order_number }}{% endblock %}
+{% block title %}Verify Payment - Rental #{{ order.order_number }}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -73,9 +73,9 @@
                     </h2>
                 </div>
                 <div class="card-body">
-                    <!-- Order Information -->
+                    <!-- Rental Information -->
                     <div class="text-center mb-4">
-                        <h4 class="mb-3">Order #{{ order.order_number }}</h4>
+                        <h4 class="mb-3">Rental #{{ order.order_number }}</h4>
                         <div class="row">
                             <div class="col-6 text-end">
                                 <strong>Total Amount:</strong>
@@ -186,7 +186,7 @@
 
                             <div class="d-flex gap-2">
                                 <a href="{% url 'shop:order_detail' order.id %}" class="btn btn-outline-secondary flex-grow-1">
-                                    <i class="fas fa-arrow-left me-2"></i>Back to Order
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Rental
                                 </a>
                                 <a href="{% url 'shop:contact_support' %}?order={{ order.order_number }}" class="btn btn-outline-primary flex-grow-1">
                                     <i class="fas fa-headset me-2"></i>Contact Support
@@ -213,7 +213,7 @@
                                 <i class="fas fa-headset me-2"></i>Contact Support
                             </a>
                             <a href="{% url 'shop:order_detail' order.id %}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-2"></i>Back to Order
+                                <i class="fas fa-arrow-left me-2"></i>Back to Rental
                             </a>
                         </div>
                     </div>
@@ -227,7 +227,7 @@
                             <li>Contact support and provide proof of payment</li>
                             <li>Support will generate and share a 6-digit PIN with you</li>
                             <li>Enter that PIN here to confirm your payment</li>
-                            <li>Your order will automatically move to "Processing" status</li>
+                            <li>Your rental will automatically move to "Processing" status</li>
                         </ol>
                     </div>
                 </div>

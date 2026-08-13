@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Order #{{ order.order_number }} - Tested Over Time{% endblock %}
+{% block title %}Rental #{{ order.order_number }} - Tested Over Time{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -77,22 +77,22 @@
 
 {% block content %}
 <div class="container py-5">
-    <!-- Order Header -->
+    <!-- Rental Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="mb-2">Order #{{ order.order_number }}</h1>
+            <h1 class="mb-2">Rental #{{ order.order_number }}</h1>
             <p class="text-muted mb-0">
-                Placed on {{ order.created_at|date:"F d, Y" }} at {{ order.created_at|date:"g:i A" }}
+                Rented on {{ order.created_at|date:"F d, Y" }} at {{ order.created_at|date:"g:i A" }}
             </p>
         </div>
         <div class="text-end">
             <a href="{% url 'shop:order_list' %}" class="btn btn-outline-primary">
-                <i class="fas fa-arrow-left me-2"></i> Back to Orders
+                <i class="fas fa-arrow-left me-2"></i> Back to Rentals
             </a>
         </div>
     </div>
 
-    <!-- Order Status Alert -->
+    <!-- Rental Status Alert -->
     <div class="alert
         {% if order.status == 'DELIVERED' %}alert-success
         {% elif order.status == 'CANCELLED' %}alert-danger
@@ -109,9 +109,9 @@
                 {% else %}fa-clock{% endif %}
                 fs-4 me-3"></i>
             <div>
-                <h5 class="alert-heading mb-1">Order Status: {{ order.get_status_display }}</h5>
+                <h5 class="alert-heading mb-1">Rental Status: {{ order.get_status_display }}</h5>
                 {% if order.status == 'SHIPPED' and order.shipped_at %}
-                    <p class="mb-0">Shipped on {{ order.shipped_at|date:"F d, Y" }}</p>
+                    <p class="mb-0">Dispatched on {{ order.shipped_at|date:"F d, Y" }}</p>
                 {% elif order.status == 'DELIVERED' and order.delivered_at %}
                     <p class="mb-0">Delivered on {{ order.delivered_at|date:"F d, Y" }}</p>
                 {% endif %}
@@ -123,13 +123,13 @@
     {% if not order.payment_status and order.status != 'CANCELLED' %}
     <div class="card shadow-sm border-warning mb-4">
         <div class="card-header bg-warning text-dark">
-            <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i> Complete Your Payment</h5>
+            <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i> Complete Your Rental Payment</h5>
         </div>
         <div class="card-body">
             <div class="row align-items-center">
                 <div class="col-md-8">
                     <h6 class="mb-2">Two-Step Payment Process</h6>
-                    <p class="mb-3">Complete both steps to verify your payment and start order processing.</p>
+                    <p class="mb-3">Complete both steps to verify your payment and start rental processing.</p>
 
                     <div class="row g-3">
                         <!-- Step 1 -->
@@ -173,11 +173,11 @@
     {% endif %}
 
     <div class="row">
-        <!-- Order Items -->
+        <!-- Rental Items -->
         <div class="col-lg-8">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">Order Items</h5>
+                    <h5 class="mb-0">Rental Items</h5>
                 </div>
                 <div class="card-body">
                     {% if order_items %}
@@ -263,18 +263,18 @@
                         {% else %}
                         <div class="text-center py-4">
                             <i class="fas fa-box display-6 text-muted mb-3"></i>
-                            <p class="text-muted">No items found in this order.</p>
+                            <p class="text-muted">No items found in this rental.</p>
                         </div>
                         {% endif %}
                     {% endif %}
                 </div>
             </div>
 
-            <!-- Order Notes -->
+            <!-- Rental Notes -->
             {% if order.notes %}
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">Order Notes</h5>
+                    <h5 class="mb-0">Rental Notes</h5>
                 </div>
                 <div class="card-body">
                     <p class="mb-0">{{ order.notes }}</p>
@@ -283,12 +283,12 @@
             {% endif %}
         </div>
 
-        <!-- Order Summary & Shipping -->
+        <!-- Rental Summary & Delivery -->
         <div class="col-lg-4">
-            <!-- Order Summary -->
+            <!-- Rental Summary -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">Order Summary</h5>
+                    <h5 class="mb-0">Rental Summary</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-2">
@@ -296,7 +296,7 @@
                         <span>${{ order.subtotal|default:subtotal }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span>Shipping</span>
+                        <span>Delivery</span>
                         <span>${{ order.shipping_cost }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
@@ -361,10 +361,10 @@
                 </div>
             </div>
 
-            <!-- Shipping Information -->
+            <!-- Delivery Information -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">Shipping Information</h5>
+                    <h5 class="mb-0">Delivery Information</h5>
                 </div>
                 <div class="card-body">
                     <p class="mb-1"><strong>{{ request.user.get_full_name|default:request.user.username }}</strong></p>
@@ -384,16 +384,16 @@
                 </div>
             </div>
 
-            <!-- Order Actions -->
+            <!-- Rental Actions -->
             <div class="card shadow-sm">
                 <div class="card-header bg-light">
-                    <h5 class="mb-0">Order Actions</h5>
+                    <h5 class="mb-0">Rental Actions</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         {% if order.status == 'PENDING' %}
                         <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
-                            <i class="fas fa-times-circle me-2"></i> Cancel Order
+                            <i class="fas fa-times-circle me-2"></i> Cancel Rental
                         </button>
                         {% endif %}
 
@@ -408,11 +408,11 @@
                         {% endif %}
 
                         <a href="{% url 'shop:product_list' %}" class="btn btn-outline-primary">
-                            <i class="fas fa-store me-2"></i> Continue Shopping
+                            <i class="fas fa-store me-2"></i> Continue Browsing
                         </a>
 
                         <button class="btn btn-outline-secondary" onclick="window.print()">
-                            <i class="fas fa-print me-2"></i> Print Invoice
+                            <i class="fas fa-print me-2"></i> Print Rental Agreement
                         </button>
                     </div>
                 </div>
@@ -427,7 +427,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="paymentModalLabel">Get Payment Details for Order #{{ order.order_number }}</h5>
+                <h5 class="modal-title" id="paymentModalLabel">Get Payment Details for Rental #{{ order.order_number }}</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -506,7 +506,7 @@
                         <p>To get the {{ order.get_payment_method_display }} account details for your payment:</p>
                         <ol class="mb-0">
                             <li>Contact support using one of the buttons below</li>
-                            <li>Provide your order number: <strong>#{{ order.order_number }}</strong></li>
+                            <li>Provide your rental number: <strong>#{{ order.order_number }}</strong></li>
                             <li>Request account details for {{ order.get_payment_method_display }}</li>
                             <li>Send <strong>${{ order.total }}</strong> to the account provided</li>
                             <li>Support will give you a 6-digit verification PIN</li>
@@ -540,7 +540,7 @@
                                     <i class="fas fa-envelope fs-2 text-dark mb-3"></i>
                                     <h6>Email Support</h6>
                                     <p class="small text-muted mb-2">For detailed inquiries</p>
-                                    <a href="mailto:support@testedovertime.com?subject=Payment%20Details%20for%20Order%20%23{{ order.order_number }}&body=Order%20Number:%20{{ order.order_number }}%0AAmount:%20${{ order.total }}%0APayment%20Method:%20{{ order.get_payment_method_display }}"
+                                    <a href="mailto:rentals@testedovertime.com?subject=Payment%20Details%20for%20Rental%20%23{{ order.order_number }}&body=Rental%20Number:%20{{ order.order_number }}%0AAmount:%20${{ order.total }}%0APayment%20Method:%20{{ order.get_payment_method_display }}"
                                        class="btn btn-outline-dark w-100">
                                         <i class="fas fa-envelope me-2"></i> Email Support
                                     </a>
@@ -561,24 +561,24 @@
 </div>
 {% endif %}
 
-<!-- Cancel Order Modal -->
+<!-- Cancel Rental Modal -->
 {% if order.status == 'PENDING' %}
 <div class="modal fade" id="cancelOrderModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Cancel Order</h5>
+                <h5 class="modal-title">Cancel Rental</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to cancel this order?</p>
+                <p>Are you sure you want to cancel this rental?</p>
                 <p class="text-danger"><strong>Note:</strong> This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Order</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Keep Rental</button>
                 <form method="post" action="#">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Cancel Order</button>
+                    <button type="submit" class="btn btn-danger">Cancel Rental</button>
                 </form>
             </div>
         </div>
@@ -586,14 +586,14 @@
 </div>
 {% endif %}
 
-<!-- Order Timeline -->
+<!-- Rental Timeline -->
 <div class="container pb-5">
-    <h5 class="mb-4">Order Timeline</h5>
+    <h5 class="mb-4">Rental Timeline</h5>
     <div class="timeline">
         <div class="timeline-item {% if order.status == 'DELIVERED' %}completed{% elif order.status == 'SHIPPED' %}completed{% elif order.status == 'PROCESSING' %}completed{% else %}active{% endif %}">
             <div class="timeline-marker"></div>
             <div class="timeline-content">
-                <h6 class="mb-1">Order Placed</h6>
+                <h6 class="mb-1">Rental Created</h6>
                 <p class="text-muted small mb-0">{{ order.created_at|date:"F d, Y g:i A" }}</p>
             </div>
         </div>
@@ -615,14 +615,14 @@
         <div class="timeline-item {% if order.status == 'DELIVERED' %}completed{% elif order.status == 'SHIPPED' %}active{% endif %}">
             <div class="timeline-marker"></div>
             <div class="timeline-content">
-                <h6 class="mb-1">Shipped</h6>
+                <h6 class="mb-1">Dispatched</h6>
                 <p class="text-muted small mb-0">
                     {% if order.shipped_at %}
-                        Shipped on {{ order.shipped_at|date:"F d, Y" }}
+                        Dispatched on {{ order.shipped_at|date:"F d, Y" }}
                     {% elif order.status == 'SHIPPED' or order.status == 'DELIVERED' %}
-                        Ready for shipping
+                        Ready for dispatch
                     {% else %}
-                        Not shipped yet
+                        Not dispatched yet
                     {% endif %}
                 </p>
             </div>
@@ -649,7 +649,7 @@
 <script>
     // Function to open chat with pre-filled message
     function openSupportChat() {
-        const message = `Hi, I need ${'{{ order.get_payment_method_display }}'} account details for order #{{ order.order_number }}. Amount: ${{ order.total }}.`;
+        const message = `Hi, I need ${'{{ order.get_payment_method_display }}'} account details for rental #{{ order.order_number }}. Amount: ${{ order.total }}.`;
 
         // Check if SmartSupp is available
         if (typeof smartsupp !== 'undefined') {
@@ -664,9 +664,9 @@
             }));
         } else {
             // Fallback to mailto
-            const subject = `Payment Details for Order #{{ order.order_number }}`;
-            const body = `${message}\n\nOrder Number: {{ order.order_number }}\nAmount: ${{ order.total }}\nPayment Method: {{ order.get_payment_method_display }}`;
-            window.location.href = `mailto:support@testedovertime.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            const subject = `Payment Details for Rental #{{ order.order_number }}`;
+            const body = `${message}\n\nRental Number: {{ order.order_number }}\nAmount: ${{ order.total }}\nPayment Method: {{ order.get_payment_method_display }}`;
+            window.location.href = `mailto:rentals@testedovertime.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
     }
 

@@ -1,0 +1,6 @@
+Django>=4.2,<5.0
+psycopg2-binary
+gunicorn
+crispy-bootstrap5
+django-crispy-forms
+pillow  # if using image fields

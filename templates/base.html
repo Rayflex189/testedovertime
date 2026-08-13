@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Tested Over Time{% endblock %}</title>
+    <title>{% block title %}Tested Over Time - Rentals{% endblock %}</title>
 
     <!-- Google Fonts for elegant, faith-inspired typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -248,7 +248,7 @@ if(w.chaport)return;v3=w.chaport={};v3._q=[];v3._l={};v3.q=function(){v3._q.push
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link mx-2" href="{% url 'shop:product_list' %}">Shop All</a>
+                        <a class="nav-link mx-2" href="{% url 'shop:product_list' %}">Rentals</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link mx-2" href="#">Blog</a>
@@ -266,7 +266,7 @@ if(w.chaport)return;v3=w.chaport={};v3._q=[];v3._l={};v3.q=function(){v3._q.push
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a></li>
-                            <li><a class="dropdown-item" href="{% url 'shop:order_list' %}">My Orders</a></li>
+                            <li><a class="dropdown-item" href="{% url 'shop:order_list' %}">My Rentals</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a class="dropdown-item" href="#" onclick="document.getElementById('logout-form').submit(); return false;">
@@ -336,7 +336,7 @@ if(w.chaport)return;v3=w.chaport={};v3._q=[];v3._l={};v3.q=function(){v3._q.push
             <div class="row align-items-center">
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <div class="footer-brand">TESTED OVER TIME</div>
-                    <p class="footer-tagline">More than a brand. It's a testimony.</p>
+                    <p class="footer-tagline">More than a rental. It's an experience.</p>
                 </div>
                 <div class="col-lg-8">
                     <div class="row">

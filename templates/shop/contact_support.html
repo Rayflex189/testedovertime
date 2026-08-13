@@ -67,14 +67,14 @@
                 </div>
                 <h1 class="h2 mb-3">Customer Support</h1>
                 <p class="text-muted lead mb-4">
-                    We're here to help! Get assistance with orders, products, or any questions you may have.
+                    We're here to help! Get assistance with rentals, delivery, or any questions you may have.
                 </p>
                 
                 {% if order_number %}
                 <div class="alert alert-info d-inline-flex align-items-center mb-0">
                     <i class="bi bi-info-circle me-2"></i>
                     <div>
-                        <strong>Order Reference:</strong> {{ order_number }}
+                        <strong>Rental Reference:</strong> {{ order_number }}
                         {% if order %}
                         - {{ order.get_status_display }}
                         {% endif %}
@@ -166,7 +166,7 @@
                             </div>
                         </div>
                         
-                        <!-- Issue Type and Order Number -->
+                        <!-- Issue Type and Rental Number -->
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -184,7 +184,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="{{ form.order_number.id_for_label }}" class="form-label">
-                                        Order Number (if applicable)
+                                        Rental Number (if applicable)
                                     </label>
                                     {{ form.order_number }}
                                     {% if form.order_number.errors %}
@@ -193,7 +193,7 @@
                                     </div>
                                     {% endif %}
                                     <small class="form-text text-muted">
-                                        Find this in your order confirmation email or in "My Orders"
+                                        Find this in your rental confirmation email or in "My Rentals"
                                     </small>
                                 </div>
                             </div>
@@ -227,7 +227,7 @@
                                 </div>
                                 {% endif %}
                                 <small class="form-text text-muted">
-                                    Please provide as much detail as possible. Include order numbers, dates, and specific product names when relevant.
+                                    Please provide as much detail as possible. Include rental numbers, dates, and specific item names when relevant.
                                 </small>
                             </div>
                         </div>
@@ -255,7 +255,7 @@
                             <div>
                                 <a href="{% if order %}{% url 'shop:order_detail' order_id=order.order_number %}{% else %}{% url 'shop:order_list' %}{% endif %}" 
                                    class="btn btn-outline-secondary">
-                                    <i class="bi bi-arrow-left me-1"></i> Back to Orders
+                                    <i class="bi bi-arrow-left me-1"></i> Back to Rentals
                                 </a>
                             </div>
                             <div>
@@ -283,7 +283,7 @@
                             <p class="card-text text-muted">
                                 For non-urgent inquiries:
                                 <br>
-                                <strong>support@testedovertime.com</strong>
+                                <strong>rentals@testedovertime.com</strong>
                             </p>
                         </div>
                     </div>
@@ -315,9 +315,9 @@
                             </div>
                             <h5 class="card-title">Before Contacting</h5>
                             <ul class="list-unstyled text-muted">
-                                <li class="mb-1">✓ Check order status</li>
+                                <li class="mb-1">✓ Check rental status</li>
                                 <li class="mb-1">✓ Review FAQ section</li>
-                                <li>✓ Have order number ready</li>
+                                <li>✓ Have rental number ready</li>
                             </ul>
                         </div>
                     </div>

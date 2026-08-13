@@ -7,9 +7,9 @@ SECRET_KEY = '7u9#f2!s^q$e@w3B8pYhR*6Kz&XJdM%4C0A_LV+N' # Change in production
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['testedovertime.pythonanywhere.com']
+ALLOWED_HOSTS = ['www.testedovertime.shop']
 
-CSRF_TRUSTED_ORIGINS = ['https://testedovertime.pythonanywhere.com']
+CSRF_TRUSTED_ORIGINS = ['https://www.testedovertime.shop']
 
 # Only use this if you're behind a proxy/load balancer
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

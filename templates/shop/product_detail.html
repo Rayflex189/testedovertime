@@ -396,7 +396,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'shop:home' %}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}">Shop</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}">Rentals</a></li>
                 {% if product.category %}
                 <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}?category={{ product.category.slug }}">{{ product.category.name }}</a></li>
                 {% endif %}
@@ -481,9 +481,9 @@
                     <!-- Stock Status -->
                     <div class="mb-4">
                         {% if product.stock > 5 %}
-                        <span class="badge bg-success">In Stock</span>
+                        <span class="badge bg-success">Available for Rent</span>
                         {% elif product.stock > 0 and product.stock <= 5 %}
-                        <span class="badge bg-warning">Low Stock ({{ product.stock }} left)</span>
+                        <span class="badge bg-warning">Low Availability ({{ product.stock }} left)</span>
                         {% else %}
                         <span class="badge bg-danger">Out of Stock</span>
                         {% endif %}
@@ -530,7 +530,7 @@
                                     {% if product.stock <= 0 %}
                                     Out of Stock
                                     {% else %}
-                                    Add to Cart
+                                    Rent Now
                                     {% endif %}
                                 </button>
                             </div>
@@ -545,7 +545,7 @@
                         <input type="hidden" name="quantity" value="1">
                         <input type="hidden" name="size" id="buy-now-size">
                         <button type="submit" class="btn-buy-now w-100">
-                            <i class="bi bi-lightning me-2"></i> Buy Now
+                            <i class="bi bi-lightning me-2"></i> Rent Now
                         </button>
                     </form>
                     {% endif %}
@@ -557,8 +557,8 @@
                                 <div class="feature-icon">
                                     <i class="bi bi-truck"></i>
                                 </div>
-                                <h6 class="feature-title">Free Shipping</h6>
-                                <p class="feature-description">On orders over $50</p>
+                                <h6 class="feature-title">Free Delivery</h6>
+                                <p class="feature-description">On rentals over $50</p>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -566,8 +566,8 @@
                                 <div class="feature-icon">
                                     <i class="bi bi-arrow-repeat"></i>
                                 </div>
-                                <h6 class="feature-title">Easy Returns</h6>
-                                <p class="feature-description">30-day return policy</p>
+                                <h6 class="feature-title">Flexible Return</h6>
+                                <p class="feature-description">Flexible return policy</p>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -575,8 +575,8 @@
                                 <div class="feature-icon">
                                     <i class="bi bi-shield-check"></i>
                                 </div>
-                                <h6 class="feature-title">Quality Guarantee</h6>
-                                <p class="feature-description">Premium materials</p>
+                                <h6 class="feature-title">Quality Guaranteed</h6>
+                                <p class="feature-description">Quality guaranteed</p>
                             </div>
                         </div>
                     </div>
@@ -589,23 +589,22 @@
 <!-- Additional Details Section -->
 <section class="py-5 bg-light">
     <div class="container">
-        <h3 class="section-title">Product Details</h3>
+        <h3 class="section-title">Rental Details</h3>
         <div class="row">
             <div class="col-md-6">
-                <h4 style="font-family: var(--font-elegant); font-weight: 600;">Materials & Care</h4>
+                <h4 style="font-family: var(--font-elegant); font-weight: 600;">Rental Terms & Conditions</h4>
                 <p class="product-description">
                     {% if product.materials %}
                     {{ product.materials|linebreaks }}
                     {% else %}
-                    Made with premium quality materials designed for comfort and durability. Machine wash cold, tumble dry low.
+                    All rental items are carefully inspected and maintained for quality. We ensure each item meets our high standards before delivery.
                     {% endif %}
                 </p>
             </div>
             <div class="col-md-6">
-                <h4 style="font-family: var(--font-elegant); font-weight: 600;">Shipping & Returns</h4>
+                <h4 style="font-family: var(--font-elegant); font-weight: 600;">Delivery & Returns</h4>
                 <p class="product-description">
-                    Free standard shipping on orders over $50. Express shipping available.
-                    30-day return policy. Items must be unworn with original tags.
+                    Free standard delivery on rentals over $50. Express delivery available. Flexible return policy. Items must be returned in original condition.
                 </p>
             </div>
         </div>
@@ -657,7 +656,7 @@
                     </div>
                 </div>
                 {% empty %}
-                <p class="text-muted">No reviews yet. Be the first to review this product!</p>
+                <p class="text-muted">No reviews yet. Be the first to review this item!</p>
                 {% endfor %}
 
                 <!-- Add Review Form -->

@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Orders - Tested Over Time{% endblock %}
+{% block title %}My Rentals - Tested Over Time{% endblock %}
 
 {% block content %}
 <div class="container py-5">
-    <h1 class="mb-4">My Orders</h1>
+    <h1 class="mb-4">My Rentals</h1>
     
     {% if orders %}
     <div class="card shadow-sm">
@@ -14,7 +14,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Order #</th>
+                            <th>Rental #</th>
                             <th>Date</th>
                             <th>Items</th>
                             <th>Total</th>
@@ -54,9 +54,9 @@
         </div>
     </div>
 
-    <!-- Order Status Legend -->
+    <!-- Rental Status Legend -->
     <div class="mt-4">
-        <h6>Order Status Legend:</h6>
+        <h6>Rental Status Legend:</h6>
         <div class="d-flex flex-wrap gap-2">
             <span class="badge bg-secondary">Pending</span>
             <span class="badge bg-warning">Processing</span>
@@ -71,10 +71,10 @@
         <div class="mb-4">
             <i class="bi bi-bag display-1 text-muted"></i>
         </div>
-        <h3 class="mb-3">No Orders Yet</h3>
-        <p class="text-muted mb-4">You haven't placed any orders yet. Start shopping to see your order history here.</p>
+        <h3 class="mb-3">No Rentals Yet</h3>
+        <p class="text-muted mb-4">You haven't placed any rentals yet. Start browsing to see your rental history here.</p>
         <a href="{% url 'shop:product_list' %}" class="btn btn-primary btn-lg">
-            <i class="bi bi-shop"></i> Start Shopping
+            <i class="bi bi-shop"></i> Start Browsing
         </a>
     </div>
     {% endif %}

@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = '7u9#f2!s^q$e@w3B8pYhR*6Kz&XJdM%4C0A_LV+N' # Change in production
+SECRET_KEY = '7u9#f2!s^q$e@w3B8pYhR*6Kz&XJdM%4C0A_LV+N'  # Change in production
 
 DEBUG = True
 
@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     # Third party apps
     'crispy_forms',
     'crispy_bootstrap5',
+    'cloudinary',                     # <-- add
+    'cloudinary_storage',             # <-- add
 
     # Local apps
     'shop.apps.ShopConfig',
@@ -79,7 +81,7 @@ DATABASES = {
         "PORT": '6543',
         "CONN_MAX_AGE": 60,
     }
-} 
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -101,11 +103,29 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# -------------------------------------------------------------------
+# Cloudinary Configuration (added)
+# -------------------------------------------------------------------
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dlzn0moho',
+    'API_KEY': '967749748734626',
+    'API_SECRET': 'HMaEaoKbX9CmOSiLgSiwNtzUePY',
+}
+
+# Use Cloudinary for media file storage
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Optional: also use Cloudinary for static files (uncomment if you want)
+# STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
+
+# -------------------------------------------------------------------
+
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_URL = '/media/'
+# Media files are now handled by Cloudinary, but we keep these for local development
+MEDIA_URL = '/media/'          # may not be used if Cloudinary handles media
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Custom user model
@@ -122,7 +142,7 @@ EMAIL_HOST = 'smtp.gmail.com'  # Or your email provider
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'forgivenessoverrevenge37@gmail.com'
-EMAIL_HOST_PASSWORD = 'lfiw xjdd emjk eyso'
+EMAIL_HOST_PASSWORD = 'lfiw xjdd emjk eyso'
 DEFAULT_FROM_EMAIL = 'forgivenessoverrevenge37@gmail.com'
 SUPPORT_EMAIL = 'forgivenessoverrevenge37@gmail.com'
 

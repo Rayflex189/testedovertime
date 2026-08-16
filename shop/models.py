@@ -157,9 +157,19 @@ class Order(models.Model):
     ]
 
     PAYMENT_CHOICES = [
-        ('ZELLE', 'Zelle'),
-        ('PAYPAL', 'PayPal'),
-        ('CASHAPP', 'Cash App'),
+    ('ZELLE', 'Zelle'),
+    ('PAYPAL', 'PayPal'),
+    ('CASHAPP', 'Cash App'),
+    ('BANK_TRANSFER', 'Bank Transfer'),
+    ('VENMO', 'Venmo'),
+    ('APPLE_PAY', 'Apple Pay'),
+    ('GOOGLE_PAY', 'Google Pay'),
+    ('WISE', 'Wise'),
+    ('REVOLUT', 'Revolut'),
+    ('WESTERN_UNION', 'Western Union'),
+    ('MONEYGRAM', 'MoneyGram'),
+    ('USDT', 'USDT'),
+    ('BITCOIN', 'Bitcoin'),
     ]
 
     order_number = models.CharField(max_length=20, unique=True, editable=False)
